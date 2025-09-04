@@ -1,17 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useKV } from '@github/spark/hooks';
-import { GameState, ChildProfile, JourneyStep } from '@/types';
+import { GameState, ChildProfile, JourneyStep, JourneyTemplate } from '@/types';
 import { DEFAULT_JOURNEY_STEPS } from '@/lib/constants';
+import { journeyTemplates } from '@/data/journey-templates';
 import { useAllProfiles } from './use-all-profiles';
 
 export function useGameState() {
   const [gameState, setGameState] = useKV<GameState>('leos-adventures-state', {
     currentScreen: 'welcome',
-    journeySteps: DEFAULT_JOURNEY_STEPS,
+    journeySteps: [], // Will be set by template
     showStaffAccess: false,
   });
 
   const { addOrUpdateProfile } = useAllProfiles();
+
+  // Initialize journey steps if empty and no template selected
+  useEffect(() => {
+    if (gameState.journeySteps.length === 0 && !gameState.selectedJourneyTemplate) {
+      // Use the first template as default (basic emergency visit)
+      const defaultTemplate = journeyTemplates[0];
+      setSelectedJourneyTemplate(defaultTemplate);
+    }
+  }, [gameState.journeySteps.length, gameState.selectedJourneyTemplate]);
 
   const updateCurrentScreen = (screen: GameState['currentScreen']) => {
     console.log('Updating screen to:', screen);
@@ -156,12 +166,34 @@ export function useGameState() {
     });
   };
 
+  const setSelectedJourneyTemplate = (template: JourneyTemplate, patientName?: string) => {
+    console.log('Setting journey template:', template);
+    
+    // Convert template steps to journey steps
+    const journeySteps: JourneyStep[] = template.steps.map((step, index) => ({
+      ...step,
+      completed: false,
+      current: index === 0 // First step is current
+    }));
+    
+    setGameState(current => ({
+      ...current,
+      selectedJourneyTemplate: template,
+      journeySteps: journeySteps,
+      patientName: patientName || current.patientName
+    }));
+  };
+
+  const setCurrentScreen = (screen: GameState['currentScreen']) => {
+    updateCurrentScreen(screen);
+  };
+
   const resetGame = () => {
     console.log('Resetting game to welcome screen');
     setGameState(() => {
       const newState = {
         currentScreen: 'welcome' as const,
-        journeySteps: DEFAULT_JOURNEY_STEPS,
+        journeySteps: [], // Will be set by template
         showStaffAccess: false,
       };
       console.log('Reset state:', newState);
@@ -249,6 +281,8 @@ export function useGameState() {
   return {
     gameState,
     updateCurrentScreen,
+    setCurrentScreen,
+    setSelectedJourneyTemplate,
     createChildProfile,
     updateJourneyStep,
     addEmotionEntry,

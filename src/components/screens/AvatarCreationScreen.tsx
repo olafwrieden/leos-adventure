@@ -9,10 +9,10 @@ import { ArrowLeft, Check } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
 export function AvatarCreationScreen() {
-  const { updateCurrentScreen, createChildProfile, awardBadge } = useGameState();
+  const { updateCurrentScreen, createChildProfile, awardBadge, gameState } = useGameState();
   const [selectedType, setSelectedType] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
-  const [childName, setChildName] = useState<string>('');
+  const [childName, setChildName] = useState<string>(gameState.patientName || '');
   const [step, setStep] = useState<'type' | 'color' | 'name'>('type');
 
   const handleCreateProfile = () => {

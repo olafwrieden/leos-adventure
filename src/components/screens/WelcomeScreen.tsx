@@ -42,12 +42,28 @@ export function WelcomeScreen() {
             </div>
             <div className="space-y-2">
               <h2 className="text-2xl font-fredoka font-semibold text-foreground">
-                Welcome, brave adventurer!
+                Welcome{gameState.patientName ? `, ${gameState.patientName}` : ', brave adventurer'}!
               </h2>
               <p className="text-foreground/80 leading-relaxed">
-                Today you're going on a special adventure through the hospital. 
-                You'll meet new friends, earn amazing badges, and become a real Health Hero!
+                {gameState.selectedJourneyTemplate ? (
+                  <>
+                    Today you're going on a special <strong>{gameState.selectedJourneyTemplate.name.toLowerCase()}</strong> adventure! 
+                    You'll meet new friends, earn amazing badges, and become a real Health Hero!
+                  </>
+                ) : (
+                  <>
+                    Today you're going on a special adventure through the hospital. 
+                    You'll meet new friends, earn amazing badges, and become a real Health Hero!
+                  </>
+                )}
               </p>
+              {gameState.selectedJourneyTemplate && (
+                <div className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg">
+                  📍 <strong>{gameState.selectedJourneyTemplate.department}</strong><br/>
+                  ⏱️ About {gameState.selectedJourneyTemplate.estimatedDuration}<br/>
+                  🗺️ {gameState.selectedJourneyTemplate.steps.length} fun steps to complete
+                </div>
+              )}
             </div>
           </div>
 

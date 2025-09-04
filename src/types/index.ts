@@ -29,6 +29,16 @@ export interface JourneyStep {
   current: boolean;
 }
 
+export interface JourneyTemplate {
+  id: string;
+  name: string;
+  description: string;
+  department: string;
+  estimatedDuration: string;
+  steps: Omit<JourneyStep, 'completed' | 'current'>[];
+  color: string;
+}
+
 export interface ChildProfile {
   id: string;
   name: string;
@@ -42,8 +52,10 @@ export interface ChildProfile {
 }
 
 export interface GameState {
-  currentScreen: 'welcome' | 'avatar-creation' | 'journey' | 'check-in' | 'celebration' | 'staff-dashboard';
+  currentScreen: 'welcome' | 'avatar-creation' | 'journey' | 'check-in' | 'celebration' | 'staff-dashboard' | 'journey-setup';
   childProfile?: ChildProfile;
   journeySteps: JourneyStep[];
+  selectedJourneyTemplate?: JourneyTemplate;
+  patientName?: string; // Name entered during journey setup
   showStaffAccess: boolean;
 }

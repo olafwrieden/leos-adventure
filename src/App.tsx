@@ -5,6 +5,7 @@ import { JourneyScreen } from '@/components/screens/JourneyScreen';
 import { CheckInScreen } from '@/components/screens/CheckInScreen';
 import { CelebrationScreen } from '@/components/screens/CelebrationScreen';
 import { StaffDashboard } from '@/components/screens/StaffDashboard';
+import { JourneySetupScreen } from '@/components/screens/JourneySetupScreen';
 import { Toaster } from '@/components/ui/sonner';
 
 function App() {
@@ -24,6 +25,8 @@ function App() {
         return <CelebrationScreen />;
       case 'staff-dashboard':
         return <StaffDashboard />;
+      case 'journey-setup':
+        return <JourneySetupScreen />;
       default:
         return <WelcomeScreen />;
     }

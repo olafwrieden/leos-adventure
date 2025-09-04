@@ -6,12 +6,12 @@ import { useAllProfiles } from '@/hooks/use-all-profiles';
 import { useGameState } from '@/hooks/use-game-state';
 import { ChildProfile } from '@/types';
 import { EMOTIONS, PAIN_LEVELS } from '@/lib/constants';
-import { ArrowLeft, Download, Users, Clock, TrendUp } from '@phosphor-icons/react';
+import { ArrowLeft, Download, Users, Clock, TrendUp, Plus } from '@phosphor-icons/react';
 import { AvatarDisplay } from '@/components/avatar/AvatarDisplay';
 import { useState } from 'react';
 
 export function StaffDashboard() {
-  const { updateCurrentScreen } = useGameState();
+  const { updateCurrentScreen, setCurrentScreen } = useGameState();
   const { allProfiles } = useAllProfiles();
   const [selectedProfile, setSelectedProfile] = useState<ChildProfile | null>(null);
 
@@ -77,10 +77,19 @@ export function StaffDashboard() {
               </p>
             </div>
           </div>
-          <Button variant="outline" size="sm">
-            <Download className="w-4 h-4 mr-2" />
-            Export Data
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button 
+              onClick={() => setCurrentScreen('journey-setup')}
+              className="touch-target"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Setup New Journey
+            </Button>
+            <Button variant="outline" size="sm">
+              <Download className="w-4 h-4 mr-2" />
+              Export Data
+            </Button>
+          </div>
         </div>
       </div>
 
