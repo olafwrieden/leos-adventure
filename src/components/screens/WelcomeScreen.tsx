@@ -4,7 +4,7 @@ import { useGameState } from '@/hooks/use-game-state';
 import { Heart, Settings } from '@phosphor-icons/react';
 
 export function WelcomeScreen() {
-  const { updateCurrentScreen, toggleStaffAccess, gameState } = useGameState();
+  const { updateCurrentScreen, toggleStaffAccess, gameState, createTestProfile, createTestProfiles } = useGameState();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 flex flex-col items-center justify-center p-4">
@@ -86,17 +86,47 @@ export function WelcomeScreen() {
 
       {/* Staff Dashboard Access */}
       {gameState.showStaffAccess && (
-        <div className="absolute bottom-4 left-4">
+        <div className="absolute bottom-4 left-4 space-y-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => updateCurrentScreen('staff-dashboard')}
-            className="opacity-50 hover:opacity-100"
+            onClick={() => {
+              console.log('Clicking staff dashboard');
+              createTestProfiles(); // Create some test data
+              updateCurrentScreen('staff-dashboard');
+            }}
+            className="opacity-50 hover:opacity-100 block"
           >
             Staff Dashboard
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              createTestProfiles();
+            }}
+            className="opacity-30 hover:opacity-100 block text-xs"
+          >
+            Add Test Data
+          </Button>
         </div>
       )}
+
+      {/* Test Navigation */}
+      <div className="absolute bottom-4 right-4 space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            console.log('Test celebration click');
+            createTestProfile();
+            updateCurrentScreen('celebration');
+          }}
+          className="opacity-50 hover:opacity-100"
+        >
+          Test Celebration
+        </Button>
+      </div>
     </div>
   );
 }

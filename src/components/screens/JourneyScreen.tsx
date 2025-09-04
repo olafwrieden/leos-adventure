@@ -7,7 +7,7 @@ import { AvatarDisplay } from '@/components/avatar/AvatarDisplay';
 import { toast } from 'sonner';
 
 export function JourneyScreen() {
-  const { gameState, updateCurrentScreen, updateJourneyStep, awardBadge } = useGameState();
+  const { gameState, updateCurrentScreen, updateJourneyStep, awardBadge, createTestProfile, createTestProfiles } = useGameState();
   const { childProfile, journeySteps } = gameState;
 
   if (!childProfile) {
@@ -120,6 +120,38 @@ export function JourneyScreen() {
           >
             <Heart className="w-5 h-5 mr-2" weight="fill" />
             My Comfort
+          </Button>
+        </div>
+
+        {/* Test Navigation Buttons */}
+        <div className="grid grid-cols-2 gap-4">
+          <Button
+            variant="secondary"
+            size="lg"
+            onClick={() => {
+              console.log('Navigating to celebration');
+              // Create a test profile if none exists
+              if (!childProfile) {
+                createTestProfile();
+              }
+              updateCurrentScreen('celebration');
+            }}
+            className="touch-target font-fredoka hover-lift"
+          >
+            🏆 Test Celebration
+          </Button>
+          
+          <Button
+            variant="secondary"
+            size="lg"
+            onClick={() => {
+              console.log('Navigating to staff dashboard');
+              createTestProfiles(); // Ensure we have test data
+              updateCurrentScreen('staff-dashboard');
+            }}
+            className="touch-target font-fredoka hover-lift"
+          >
+            👩‍⚕️ Test Staff Dashboard
           </Button>
         </div>
 

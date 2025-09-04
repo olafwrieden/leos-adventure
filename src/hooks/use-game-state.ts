@@ -150,6 +150,83 @@ export function useGameState() {
     });
   };
 
+  const createTestProfile = () => {
+    const testProfile = {
+      id: 'test-profile-' + Date.now(),
+      name: 'Test Hero',
+      avatar: {
+        id: 'test-avatar',
+        name: 'Test Lion',
+        type: 'lion' as const,
+        color: '#FFD700'
+      },
+      emotions: [],
+      painLevels: [],
+      currentStep: 5,
+      completedSteps: ['arrival', 'triage', 'examination', 'treatment', 'recovery'],
+      badges: ['brave-hero', 'step-completed', 'health-champion'],
+      visitStartTime: new Date()
+    };
+    
+    setGameState(current => ({
+      ...current,
+      childProfile: testProfile
+    }));
+    
+    addOrUpdateProfile(testProfile);
+    return testProfile;
+  };
+
+  const createTestProfiles = () => {
+    const testProfiles = [
+      {
+        id: 'emma-profile',
+        name: 'Emma',
+        avatar: {
+          id: 'emma-avatar',
+          name: 'Emma the Elephant',
+          type: 'elephant' as const,
+          color: '#87CEEB'
+        },
+        emotions: [
+          { id: 'emma-e1', emotion: 'worried' as const, timestamp: new Date(Date.now() - 30000), journeyStep: 'arrival' },
+          { id: 'emma-e2', emotion: 'happy' as const, timestamp: new Date(), journeyStep: 'triage' }
+        ],
+        painLevels: [
+          { id: 'emma-p1', level: 3 as const, timestamp: new Date(Date.now() - 20000), journeyStep: 'arrival' },
+          { id: 'emma-p2', level: 1 as const, timestamp: new Date(), journeyStep: 'triage' }
+        ],
+        currentStep: 2,
+        completedSteps: ['arrival', 'triage'],
+        badges: ['brave-start', 'emotion-sharer'],
+        visitStartTime: new Date(Date.now() - 60000)
+      },
+      {
+        id: 'alex-profile',
+        name: 'Alex',
+        avatar: {
+          id: 'alex-avatar',
+          name: 'Alex the Panda',
+          type: 'panda' as const,
+          color: '#90EE90'
+        },
+        emotions: [
+          { id: 'alex-e1', emotion: 'excited' as const, timestamp: new Date(Date.now() - 45000), journeyStep: 'arrival' }
+        ],
+        painLevels: [
+          { id: 'alex-p1', level: 0 as const, timestamp: new Date(Date.now() - 40000), journeyStep: 'arrival' }
+        ],
+        currentStep: 0,
+        completedSteps: [],
+        badges: ['brave-start'],
+        visitStartTime: new Date(Date.now() - 90000)
+      }
+    ];
+
+    testProfiles.forEach(profile => addOrUpdateProfile(profile));
+    return testProfiles;
+  };
+
   return {
     gameState,
     updateCurrentScreen,
@@ -159,6 +236,8 @@ export function useGameState() {
     addPainEntry,
     awardBadge,
     toggleStaffAccess,
-    resetGame
+    resetGame,
+    createTestProfile,
+    createTestProfiles
   };
 }
