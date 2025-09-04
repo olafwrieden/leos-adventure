@@ -109,7 +109,7 @@ export function StaffDashboard() {
                 <div className="flex items-center space-x-2">
                   <Users className="w-8 h-8 text-primary" />
                   <div>
-                    <p className="text-2xl font-bold">{allProfiles.length}</p>
+                    <p className="text-2xl font-bold">{allProfiles?.length ?? 0}</p>
                     <p className="text-sm text-muted-foreground">Active Patients</p>
                   </div>
                 </div>
@@ -120,7 +120,7 @@ export function StaffDashboard() {
                   <Clock className="w-8 h-8 text-accent" />
                   <div>
                     <p className="text-2xl font-bold">
-                      {allProfiles.filter(p => p.emotions.length > 0).length}
+                      {allProfiles?.filter(p => p.emotions.length > 0).length ?? 0}
                     </p>
                     <p className="text-sm text-muted-foreground">Recent Check-ins</p>
                   </div>
@@ -132,10 +132,10 @@ export function StaffDashboard() {
                   <TrendUp className="w-8 h-8 text-secondary" />
                   <div>
                     <p className="text-2xl font-bold">
-                      {allProfiles.filter(p => {
+                      {allProfiles?.filter(p => {
                         const latest = getLatestPain(p);
                         return latest && latest.level <= 2;
-                      }).length}
+                      }).length ?? 0}
                     </p>
                     <p className="text-sm text-muted-foreground">Comfortable Patients</p>
                   </div>
@@ -147,7 +147,7 @@ export function StaffDashboard() {
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4">Recent Patient Activity</h3>
               <div className="space-y-4">
-                {allProfiles.slice(-5).map((profile) => {
+                {(allProfiles ?? []).slice(-5).map((profile) => {
                   const latestEmotion = getLatestEmotion(profile);
                   const latestPain = getLatestPain(profile);
                   
@@ -189,7 +189,7 @@ export function StaffDashboard() {
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4">Select Patient</h3>
                 <div className="space-y-3">
-                  {allProfiles.map((profile) => {
+                  {(allProfiles ?? []).map((profile) => {
                     const latestEmotion = getLatestEmotion(profile);
                     const latestPain = getLatestPain(profile);
                     const painTrend = getPainTrend(profile);
@@ -318,7 +318,7 @@ export function StaffDashboard() {
                   <h4 className="font-medium mb-2">Emotion Distribution</h4>
                   <div className="space-y-2">
                     {EMOTIONS.map((emotion) => {
-                      const count = allProfiles.reduce((acc, profile) => 
+                      const count = (allProfiles ?? []).reduce((acc, profile) => 
                         acc + profile.emotions.filter(e => e.emotion === emotion.id).length, 0
                       );
                       return (
@@ -338,7 +338,7 @@ export function StaffDashboard() {
                   <h4 className="font-medium mb-2">Pain Level Distribution</h4>
                   <div className="space-y-2">
                     {PAIN_LEVELS.map((level) => {
-                      const count = allProfiles.reduce((acc, profile) => 
+                      const count = (allProfiles ?? []).reduce((acc, profile) => 
                         acc + profile.painLevels.filter(p => p.level === level.level).length, 0
                       );
                       return (

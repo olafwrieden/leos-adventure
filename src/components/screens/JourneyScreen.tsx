@@ -8,7 +8,8 @@ import { toast } from 'sonner';
 
 export function JourneyScreen() {
   const { gameState, updateCurrentScreen, updateJourneyStep, awardBadge, createTestProfile, createTestProfiles } = useGameState();
-  const { childProfile, journeySteps } = gameState;
+  const childProfile = gameState?.childProfile;
+  const journeySteps = gameState?.journeySteps;
 
   if (!childProfile) {
     return (
@@ -31,9 +32,9 @@ export function JourneyScreen() {
     );
   }
 
-  const currentStep = journeySteps.find(step => step.current);
-  const completedCount = journeySteps.filter(step => step.completed).length;
-  const totalSteps = journeySteps.length;
+  const currentStep = journeySteps?.find(step => step.current);
+  const completedCount = journeySteps?.filter(step => step.completed).length ?? 0;
+  const totalSteps = journeySteps?.length ?? 0;
 
   const handleStepComplete = (stepId: string) => {
     console.log('Completing step:', stepId);
@@ -42,8 +43,8 @@ export function JourneyScreen() {
     toast.success('🎉 Step completed! You\'re doing amazing!');
     
     // Check if this was the last step
-    const stepIndex = journeySteps.findIndex(s => s.id === stepId);
-    if (stepIndex === journeySteps.length - 1) {
+    const stepIndex = journeySteps?.findIndex(s => s.id === stepId) ?? -1;
+    if (stepIndex === (journeySteps?.length ?? 0) - 1) {
       // Last step completed, go to celebration
       toast.success('🏆 Adventure complete! You\'re a Health Hero!');
       setTimeout(() => updateCurrentScreen('celebration'), 2000);
@@ -113,7 +114,7 @@ export function JourneyScreen() {
                 </p>
               </div>
             )}
-            <JourneyMap steps={journeySteps} onStepComplete={handleStepComplete} />
+            <JourneyMap steps={journeySteps ?? []} onStepComplete={handleStepComplete} />
           </div>
         </Card>
 

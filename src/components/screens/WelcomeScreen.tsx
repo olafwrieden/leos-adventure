@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useGameState } from "@/hooks/use-game-state";
-import { Heart, Settings } from "@phosphor-icons/react";
+import { Heart, Gear } from "@phosphor-icons/react";
 
 export function WelcomeScreen() {
   const {
@@ -24,7 +24,7 @@ export function WelcomeScreen() {
         }}
         className="absolute top-4 right-4 opacity-20 hover:opacity-100"
       >
-        <Settings className="w-5 h-5" />
+        <Gear className="w-5 h-5" />
       </Button>
 
       {/* Main Welcome Content */}
@@ -52,13 +52,13 @@ export function WelcomeScreen() {
             <div className="space-y-2">
               <h2 className="text-2xl font-fredoka font-semibold text-foreground">
                 Welcome
-                {gameState.patientName
+                {gameState?.patientName
                   ? `, ${gameState.patientName}`
                   : ", brave adventurer"}
                 !
               </h2>
               <p className="text-foreground/80 leading-relaxed">
-                {gameState.selectedJourneyTemplate ? (
+                {gameState?.selectedJourneyTemplate ? (
                   <>
                     Today you're going on a special{" "}
                     <strong>
@@ -75,7 +75,7 @@ export function WelcomeScreen() {
                   </>
                 )}
               </p>
-              {gameState.selectedJourneyTemplate && (
+              {gameState?.selectedJourneyTemplate && (
                 <div className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg">
                   📍{" "}
                   <strong>
@@ -140,7 +140,7 @@ export function WelcomeScreen() {
       </div>
 
       {/* Staff Dashboard Access */}
-      {gameState.showStaffAccess && (
+      {gameState?.showStaffAccess && (
         <div className="absolute bottom-4 left-4 space-y-2">
           <Button
             variant="outline"

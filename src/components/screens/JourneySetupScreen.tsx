@@ -13,7 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Clock, MapPin, Users, Search } from "@phosphor-icons/react";
+import { ArrowLeft, Clock, MapPin, Users, MagnifyingGlass } from "@phosphor-icons/react";
 
 export function JourneySetupScreen() {
   const { setCurrentScreen, setSelectedJourneyTemplate, gameState } =
@@ -65,7 +65,7 @@ export function JourneySetupScreen() {
           <div className="lg:col-span-2 space-y-4">
             {/* Search */}
             <div className="relative">
-              <Search
+              <MagnifyingGlass
                 size={20}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
               />
@@ -148,7 +148,7 @@ export function JourneySetupScreen() {
 
             {filteredTemplates.length === 0 && (
               <div className="text-center py-12">
-                <Search
+                <MagnifyingGlass
                   size={48}
                   className="mx-auto text-muted-foreground mb-4"
                 />

@@ -14,7 +14,8 @@ export function CheckInScreen() {
   const [selectedEmotion, setSelectedEmotion] = useState<string>('');
   const [selectedPain, setSelectedPain] = useState<number | null>(null);
 
-  const { childProfile, journeySteps } = gameState;
+  const childProfile = gameState?.childProfile;
+  const journeySteps = gameState?.journeySteps;
   
   if (!childProfile) {
     return (
@@ -37,7 +38,7 @@ export function CheckInScreen() {
     );
   }
 
-  const currentStep = journeySteps.find(step => step.current);
+  const currentStep = journeySteps?.find(step => step.current);
 
   const handleEmotionSubmit = () => {
     if (!selectedEmotion) return;

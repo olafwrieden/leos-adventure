@@ -5,7 +5,7 @@ import { AvatarDisplay } from '@/components/avatar/AvatarDisplay';
 
 export function CelebrationScreen() {
   const { gameState, updateCurrentScreen, resetGame } = useGameState();
-  const { childProfile } = gameState;
+  const childProfile = gameState?.childProfile;
 
   if (!childProfile) {
     return (
