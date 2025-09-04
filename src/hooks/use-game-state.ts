@@ -16,19 +16,24 @@ export function useGameState() {
 
   // Initialize journey steps if empty and no template selected
   useEffect(() => {
-    if (gameState.journeySteps.length === 0 && !gameState.selectedJourneyTemplate) {
+    if (!gameState) return;
+    if (gameState.journeySteps?.length === 0 && !gameState.selectedJourneyTemplate) {
       // Use the first template as default (basic emergency visit)
       const defaultTemplate = journeyTemplates[0];
       setSelectedJourneyTemplate(defaultTemplate);
     }
-  }, [gameState.journeySteps.length, gameState.selectedJourneyTemplate]);
+  }, [gameState?.journeySteps?.length, gameState?.selectedJourneyTemplate]);
 
   const updateCurrentScreen = (screen: GameState['currentScreen']) => {
     console.log('Updating screen to:', screen);
     setGameState(current => {
-      console.log('Current state:', current);
-      const newState = {
-        ...current,
+      const safeCurrent = current ?? {
+        currentScreen: 'welcome',
+        journeySteps: [],
+        showStaffAccess: false,
+      };
+      const newState: GameState = {
+        ...safeCurrent,
         currentScreen: screen
       };
       console.log('New state:', newState);
@@ -39,10 +44,15 @@ export function useGameState() {
   const createChildProfile = (profile: ChildProfile) => {
     console.log('Creating child profile:', profile);
     setGameState(current => {
-      const newState = {
-        ...current,
+      const safeCurrent = current ?? {
+        currentScreen: 'welcome',
+        journeySteps: [],
+        showStaffAccess: false,
+      };
+      const newState: GameState = {
+        ...safeCurrent,
         childProfile: profile,
-        currentScreen: 'journey' as const
+        currentScreen: 'journey'
       };
       console.log('New state with profile:', newState);
       return newState;
@@ -53,46 +63,44 @@ export function useGameState() {
   const updateJourneyStep = (stepId: string, completed: boolean = true) => {
     console.log('updateJourneyStep called with:', stepId, completed);
     setGameState(current => {
-      console.log('Current journey steps:', current.journeySteps);
-      
-      const stepIndex = current.journeySteps.findIndex(s => s.id === stepId);
+      const safeCurrent = current ?? {
+        currentScreen: 'welcome',
+        journeySteps: [],
+        showStaffAccess: false,
+      };
+      const journeySteps = safeCurrent.journeySteps ?? [];
+      const stepIndex = journeySteps.findIndex(s => s.id === stepId);
       console.log('Found step index:', stepIndex);
-      
       if (stepIndex === -1) {
         console.error('Step not found:', stepId);
-        return current;
+        return safeCurrent;
       }
-
-      const updatedSteps = current.journeySteps.map((step, index) => {
+      const updatedSteps = journeySteps.map((step, index) => {
         if (step.id === stepId) {
           return { ...step, completed, current: false };
         }
         return step;
       });
-
       // Mark next step as current if we completed this step
       if (completed && stepIndex < updatedSteps.length - 1) {
         updatedSteps[stepIndex + 1].current = true;
       }
-
-      const updatedProfile = current.childProfile ? {
-        ...current.childProfile,
-        currentStep: completed ? Math.min(current.childProfile.currentStep + 1, updatedSteps.length - 1) : current.childProfile.currentStep,
-        completedSteps: completed 
-          ? [...current.childProfile.completedSteps.filter(id => id !== stepId), stepId]
-          : current.childProfile.completedSteps.filter(id => id !== stepId)
-      } : current.childProfile;
-
+      const childProfile = safeCurrent.childProfile;
+      const updatedProfile = childProfile ? {
+        ...childProfile,
+        currentStep: completed ? Math.min(childProfile.currentStep + 1, updatedSteps.length - 1) : childProfile.currentStep,
+        completedSteps: completed
+          ? [...childProfile.completedSteps.filter(id => id !== stepId), stepId]
+          : childProfile.completedSteps.filter(id => id !== stepId)
+      } : childProfile;
       if (updatedProfile) {
         addOrUpdateProfile(updatedProfile);
       }
-
-      const newState = {
-        ...current,
+      const newState: GameState = {
+        ...safeCurrent,
         journeySteps: updatedSteps,
         childProfile: updatedProfile
       };
-      
       console.log('New state:', newState);
       return newState;
     });
@@ -100,66 +108,86 @@ export function useGameState() {
 
   const addEmotionEntry = (emotion: ChildProfile['emotions'][0]) => {
     setGameState(current => {
-      const updatedProfile = current.childProfile ? {
-        ...current.childProfile,
-        emotions: [...current.childProfile.emotions, emotion]
-      } : current.childProfile;
-
+      const safeCurrent = current ?? {
+        currentScreen: 'welcome',
+        journeySteps: [],
+        showStaffAccess: false,
+      };
+      const childProfile = safeCurrent.childProfile;
+      const updatedProfile = childProfile ? {
+        ...childProfile,
+        emotions: [...childProfile.emotions, emotion]
+      } : childProfile;
       if (updatedProfile) {
         addOrUpdateProfile(updatedProfile);
       }
-
-      return {
-        ...current,
+      const newState: GameState = {
+        ...safeCurrent,
         childProfile: updatedProfile
       };
+      return newState;
     });
   };
 
   const addPainEntry = (pain: ChildProfile['painLevels'][0]) => {
     setGameState(current => {
-      const updatedProfile = current.childProfile ? {
-        ...current.childProfile,
-        painLevels: [...current.childProfile.painLevels, pain]
-      } : current.childProfile;
-
+      const safeCurrent = current ?? {
+        currentScreen: 'welcome',
+        journeySteps: [],
+        showStaffAccess: false,
+      };
+      const childProfile = safeCurrent.childProfile;
+      const updatedProfile = childProfile ? {
+        ...childProfile,
+        painLevels: [...childProfile.painLevels, pain]
+      } : childProfile;
       if (updatedProfile) {
         addOrUpdateProfile(updatedProfile);
       }
-
-      return {
-        ...current,
+      const newState: GameState = {
+        ...safeCurrent,
         childProfile: updatedProfile
       };
+      return newState;
     });
   };
 
   const awardBadge = (badgeId: string) => {
     setGameState(current => {
-      const updatedProfile = current.childProfile ? {
-        ...current.childProfile,
-        badges: current.childProfile.badges.includes(badgeId) 
-          ? current.childProfile.badges 
-          : [...current.childProfile.badges, badgeId]
-      } : current.childProfile;
-
+      const safeCurrent = current ?? {
+        currentScreen: 'welcome',
+        journeySteps: [],
+        showStaffAccess: false,
+      };
+      const childProfile = safeCurrent.childProfile;
+      const updatedProfile = childProfile ? {
+        ...childProfile,
+        badges: childProfile.badges.includes(badgeId)
+          ? childProfile.badges
+          : [...childProfile.badges, badgeId]
+      } : childProfile;
       if (updatedProfile) {
         addOrUpdateProfile(updatedProfile);
       }
-
-      return {
-        ...current,
+      const newState: GameState = {
+        ...safeCurrent,
         childProfile: updatedProfile
       };
+      return newState;
     });
   };
 
   const toggleStaffAccess = () => {
-    console.log('Toggling staff access, current:', gameState.showStaffAccess);
+    console.log('Toggling staff access, current:', gameState?.showStaffAccess);
     setGameState(current => {
-      const newState = {
-        ...current,
-        showStaffAccess: !current.showStaffAccess
+      const safeCurrent = current ?? {
+        currentScreen: 'welcome',
+        journeySteps: [],
+        showStaffAccess: false,
+      };
+      const newState: GameState = {
+        ...safeCurrent,
+        showStaffAccess: !safeCurrent.showStaffAccess
       };
       console.log('New staff access state:', newState.showStaffAccess);
       return newState;
@@ -168,20 +196,26 @@ export function useGameState() {
 
   const setSelectedJourneyTemplate = (template: JourneyTemplate, patientName?: string) => {
     console.log('Setting journey template:', template);
-    
     // Convert template steps to journey steps
     const journeySteps: JourneyStep[] = template.steps.map((step, index) => ({
       ...step,
       completed: false,
       current: index === 0 // First step is current
     }));
-    
-    setGameState(current => ({
-      ...current,
-      selectedJourneyTemplate: template,
-      journeySteps: journeySteps,
-      patientName: patientName || current.patientName
-    }));
+    setGameState(current => {
+      const safeCurrent = current ?? {
+        currentScreen: 'welcome',
+        journeySteps: [],
+        showStaffAccess: false,
+      };
+      const newState: GameState = {
+        ...safeCurrent,
+        selectedJourneyTemplate: template,
+        journeySteps: journeySteps,
+        patientName: patientName || safeCurrent.patientName
+      };
+      return newState;
+    });
   };
 
   const setCurrentScreen = (screen: GameState['currentScreen']) => {
@@ -191,8 +225,8 @@ export function useGameState() {
   const resetGame = () => {
     console.log('Resetting game to welcome screen');
     setGameState(() => {
-      const newState = {
-        currentScreen: 'welcome' as const,
+      const newState: GameState = {
+        currentScreen: 'welcome',
         journeySteps: [], // Will be set by template
         showStaffAccess: false,
       };
@@ -218,12 +252,18 @@ export function useGameState() {
       badges: ['brave-hero', 'step-completed', 'health-champion'],
       visitStartTime: new Date()
     };
-    
-    setGameState(current => ({
-      ...current,
-      childProfile: testProfile
-    }));
-    
+    setGameState(current => {
+      const safeCurrent = current ?? {
+        currentScreen: 'welcome',
+        journeySteps: [],
+        showStaffAccess: false,
+      };
+      const newState: GameState = {
+        ...safeCurrent,
+        childProfile: testProfile
+      };
+      return newState;
+    });
     addOrUpdateProfile(testProfile);
     return testProfile;
   };
