@@ -88,6 +88,7 @@ export const BADGES = [
   { id: 'brave-start', name: 'Brave Beginner', emoji: '🌟', description: 'Started your hospital adventure!' },
   { id: 'emotion-sharer', name: 'Feeling Friend', emoji: '💝', description: 'Shared how you feel!' },
   { id: 'pain-reporter', name: 'Comfort Communicator', emoji: '🗣️', description: 'Told us about your comfort!' },
+  { id: 'step-completed', name: 'Step Hero', emoji: '👣', description: 'Completed an adventure step!' },
   { id: 'journey-walker', name: 'Adventure Walker', emoji: '👣', description: 'Moved through your journey!' },
   { id: 'treatment-hero', name: 'Treatment Hero', emoji: '⚡', description: 'Completed your treatment!' },
   { id: 'health-champion', name: 'Health Champion', emoji: '🏆', description: 'Finished your hospital adventure!' },

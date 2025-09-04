@@ -4,9 +4,10 @@ import { useGameState } from '@/hooks/use-game-state';
 import { ArrowLeft, Heart, Smiley } from '@phosphor-icons/react';
 import { JourneyMap } from '@/components/journey/JourneyMap';
 import { AvatarDisplay } from '@/components/avatar/AvatarDisplay';
+import { toast } from 'sonner';
 
 export function JourneyScreen() {
-  const { gameState, updateCurrentScreen } = useGameState();
+  const { gameState, updateCurrentScreen, updateJourneyStep, awardBadge } = useGameState();
   const { childProfile, journeySteps } = gameState;
 
   if (!childProfile) {
@@ -16,6 +17,21 @@ export function JourneyScreen() {
   const currentStep = journeySteps.find(step => step.current);
   const completedCount = journeySteps.filter(step => step.completed).length;
   const totalSteps = journeySteps.length;
+
+  const handleStepComplete = (stepId: string) => {
+    console.log('Completing step:', stepId);
+    updateJourneyStep(stepId, true);
+    awardBadge('step-completed');
+    toast.success('🎉 Step completed! You\'re doing amazing!');
+    
+    // Check if this was the last step
+    const stepIndex = journeySteps.findIndex(s => s.id === stepId);
+    if (stepIndex === journeySteps.length - 1) {
+      // Last step completed, go to celebration
+      toast.success('🏆 Adventure complete! You\'re a Health Hero!');
+      setTimeout(() => updateCurrentScreen('celebration'), 2000);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10">
@@ -69,10 +85,19 @@ export function JourneyScreen() {
 
         {/* Journey Map */}
         <Card className="p-6">
-          <h3 className="text-lg font-fredoka font-semibold mb-4 text-center">
-            Your Adventure Map
-          </h3>
-          <JourneyMap steps={journeySteps} />
+          <div className="space-y-4">
+            <h3 className="text-lg font-fredoka font-semibold text-center">
+              Your Adventure Map
+            </h3>
+            {currentStep && (
+              <div className="bg-primary/10 p-3 rounded-lg text-center">
+                <p className="text-sm font-fredoka text-primary font-medium">
+                  💡 Tap the highlighted step below to mark it as complete!
+                </p>
+              </div>
+            )}
+            <JourneyMap steps={journeySteps} onStepComplete={handleStepComplete} />
+          </div>
         </Card>
 
         {/* Quick Actions */}

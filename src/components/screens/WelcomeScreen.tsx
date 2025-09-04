@@ -12,7 +12,10 @@ export function WelcomeScreen() {
       <Button
         variant="ghost"
         size="sm"
-        onClick={toggleStaffAccess}
+        onClick={() => {
+          console.log('Toggling staff access');
+          toggleStaffAccess();
+        }}
         className="absolute top-4 right-4 opacity-20 hover:opacity-100"
       >
         <Settings className="w-5 h-5" />

@@ -4,7 +4,7 @@ import { useGameState } from '@/hooks/use-game-state';
 import { AvatarDisplay } from '@/components/avatar/AvatarDisplay';
 
 export function CelebrationScreen() {
-  const { gameState, updateCurrentScreen } = useGameState();
+  const { gameState, updateCurrentScreen, resetGame } = useGameState();
   const { childProfile } = gameState;
 
   if (!childProfile) {
@@ -79,7 +79,10 @@ export function CelebrationScreen() {
           <Button
             variant="outline"
             size="lg"
-            onClick={() => updateCurrentScreen('welcome')}
+            onClick={() => {
+              resetGame();
+              updateCurrentScreen('welcome');
+            }}
             className="w-full touch-target font-fredoka text-lg hover-lift"
           >
             <span>Start New Adventure</span>

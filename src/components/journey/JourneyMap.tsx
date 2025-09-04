@@ -3,18 +3,24 @@ import { CheckCircle, Circle } from '@phosphor-icons/react';
 
 interface JourneyMapProps {
   steps: JourneyStep[];
+  onStepComplete?: (stepId: string) => void;
 }
 
-export function JourneyMap({ steps }: JourneyMapProps) {
+export function JourneyMap({ steps, onStepComplete }: JourneyMapProps) {
   return (
     <div className="space-y-4">
       {steps.map((step, index) => (
         <div 
           key={step.id}
-          className={`flex items-center space-x-4 p-3 rounded-lg transition-all ${
-            step.current ? 'bg-primary/10 ring-2 ring-primary/20' : 
+          className={`flex items-center space-x-4 p-3 rounded-lg transition-all relative ${
+            step.current ? 'bg-primary/10 ring-2 ring-primary/20 cursor-pointer hover:bg-primary/15' : 
             step.completed ? 'bg-accent/10' : 'bg-muted/30'
           }`}
+          onClick={() => {
+            if (step.current && onStepComplete) {
+              onStepComplete(step.id);
+            }
+          }}
         >
           {/* Step Icon/Status */}
           <div className="flex-shrink-0">
@@ -38,6 +44,11 @@ export function JourneyMap({ steps }: JourneyMapProps) {
                 step.completed ? 'text-accent-foreground' : 'text-muted-foreground'
               }`}>
                 {step.title}
+                {step.current && (
+                  <span className="ml-2 text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full animate-pulse">
+                    Tap to complete!
+                  </span>
+                )}
               </h4>
             </div>
             <p className={`text-sm leading-relaxed ${

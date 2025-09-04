@@ -31,38 +31,50 @@ export function useGameState() {
   };
 
   const updateJourneyStep = (stepId: string, completed: boolean = true) => {
+    console.log('updateJourneyStep called with:', stepId, completed);
     setGameState(current => {
+      console.log('Current journey steps:', current.journeySteps);
+      
+      const stepIndex = current.journeySteps.findIndex(s => s.id === stepId);
+      console.log('Found step index:', stepIndex);
+      
+      if (stepIndex === -1) {
+        console.error('Step not found:', stepId);
+        return current;
+      }
+
       const updatedSteps = current.journeySteps.map((step, index) => {
         if (step.id === stepId) {
           return { ...step, completed, current: false };
         }
-        if (step.id === stepId && completed) {
-          // Mark next step as current
-          const nextStep = current.journeySteps[index + 1];
-          if (nextStep) {
-            return step;
-          }
-        }
         return step;
       });
 
-      // Update current step
-      const completedStepIndex = updatedSteps.findIndex(s => s.id === stepId);
-      if (completedStepIndex >= 0 && completedStepIndex < updatedSteps.length - 1) {
-        updatedSteps[completedStepIndex + 1].current = true;
+      // Mark next step as current if we completed this step
+      if (completed && stepIndex < updatedSteps.length - 1) {
+        updatedSteps[stepIndex + 1].current = true;
       }
 
-      return {
+      const updatedProfile = current.childProfile ? {
+        ...current.childProfile,
+        currentStep: completed ? Math.min(current.childProfile.currentStep + 1, updatedSteps.length - 1) : current.childProfile.currentStep,
+        completedSteps: completed 
+          ? [...current.childProfile.completedSteps.filter(id => id !== stepId), stepId]
+          : current.childProfile.completedSteps.filter(id => id !== stepId)
+      } : current.childProfile;
+
+      if (updatedProfile) {
+        addOrUpdateProfile(updatedProfile);
+      }
+
+      const newState = {
         ...current,
         journeySteps: updatedSteps,
-        childProfile: current.childProfile ? {
-          ...current.childProfile,
-          currentStep: completed ? Math.min(current.childProfile.currentStep + 1, updatedSteps.length - 1) : current.childProfile.currentStep,
-          completedSteps: completed 
-            ? [...current.childProfile.completedSteps.filter(id => id !== stepId), stepId]
-            : current.childProfile.completedSteps.filter(id => id !== stepId)
-        } : current.childProfile
+        childProfile: updatedProfile
       };
+      
+      console.log('New state:', newState);
+      return newState;
     });
   };
 
