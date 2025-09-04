@@ -14,6 +14,7 @@ export function useGameState() {
   const { addOrUpdateProfile } = useAllProfiles();
 
   const updateCurrentScreen = (screen: GameState['currentScreen']) => {
+    console.log('Updating screen to:', screen);
     setGameState(current => ({
       ...current,
       currentScreen: screen
@@ -122,6 +123,7 @@ export function useGameState() {
   };
 
   const toggleStaffAccess = () => {
+    console.log('Toggling staff access, current:', gameState.showStaffAccess);
     setGameState(current => ({
       ...current,
       showStaffAccess: !current.showStaffAccess
