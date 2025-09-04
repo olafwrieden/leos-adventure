@@ -11,7 +11,24 @@ export function JourneyScreen() {
   const { childProfile, journeySteps } = gameState;
 
   if (!childProfile) {
-    return null;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 flex flex-col items-center justify-center p-4">
+        <div className="max-w-md w-full space-y-8 text-center">
+          <Card className="p-8 space-y-6">
+            <h2 className="text-2xl font-fredoka font-bold text-foreground">
+              Let's create your adventure friend first!
+            </h2>
+            <Button
+              size="lg"
+              onClick={() => updateCurrentScreen('welcome')}
+              className="w-full touch-target font-fredoka text-lg hover-lift"
+            >
+              Start Adventure
+            </Button>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   const currentStep = journeySteps.find(step => step.current);

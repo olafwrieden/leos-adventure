@@ -8,7 +8,24 @@ export function CelebrationScreen() {
   const { childProfile } = gameState;
 
   if (!childProfile) {
-    return null;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-accent/20 via-background to-primary/20 flex flex-col items-center justify-center p-4">
+        <div className="max-w-md w-full space-y-8 text-center">
+          <Card className="p-8 space-y-6">
+            <h2 className="text-2xl font-fredoka font-bold text-foreground">
+              Let's start your adventure first!
+            </h2>
+            <Button
+              size="lg"
+              onClick={() => updateCurrentScreen('welcome')}
+              className="w-full touch-target font-fredoka text-lg hover-lift"
+            >
+              Go to Welcome
+            </Button>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   return (

@@ -54,11 +54,26 @@ export function WelcomeScreen() {
           <div className="space-y-3">
             <Button
               size="lg"
-              onClick={() => updateCurrentScreen('avatar-creation')}
+              onClick={() => {
+                console.log('Start Adventure button clicked!');
+                updateCurrentScreen('avatar-creation');
+              }}
               className="w-full touch-target font-fredoka text-lg hover-lift"
             >
               <span>Start My Adventure!</span>
               <span className="text-xl ml-2">✨</span>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                console.log('Test button clicked!');
+                alert('Test button works!');
+              }}
+              className="w-full"
+            >
+              Test Button (Debug)
             </Button>
             
             <p className="text-sm text-muted-foreground">
