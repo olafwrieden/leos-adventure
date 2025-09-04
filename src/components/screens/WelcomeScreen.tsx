@@ -67,9 +67,9 @@ export function WelcomeScreen() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
-                console.log('Test button clicked!');
-                alert('Test button works!');
+              onClick={(e) => {
+                console.log('Test button clicked!', e);
+                alert('Test button works! Check console for click event.');
               }}
               className="w-full"
             >

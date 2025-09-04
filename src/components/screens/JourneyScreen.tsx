@@ -171,6 +171,19 @@ export function JourneyScreen() {
             👩‍⚕️ Test Staff Dashboard
           </Button>
         </div>
+        
+        {/* Direct Home Button */}
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() => {
+            console.log('Direct home navigation');
+            updateCurrentScreen('welcome');
+          }}
+          className="w-full touch-target font-fredoka hover-lift"
+        >
+          🏠 Back to Home
+        </Button>
 
         {/* Recent Badges */}
         {childProfile.badges.length > 0 && (

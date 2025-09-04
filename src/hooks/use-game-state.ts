@@ -15,18 +15,28 @@ export function useGameState() {
 
   const updateCurrentScreen = (screen: GameState['currentScreen']) => {
     console.log('Updating screen to:', screen);
-    setGameState(current => ({
-      ...current,
-      currentScreen: screen
-    }));
+    setGameState(current => {
+      console.log('Current state:', current);
+      const newState = {
+        ...current,
+        currentScreen: screen
+      };
+      console.log('New state:', newState);
+      return newState;
+    });
   };
 
   const createChildProfile = (profile: ChildProfile) => {
-    setGameState(current => ({
-      ...current,
-      childProfile: profile,
-      currentScreen: 'journey'
-    }));
+    console.log('Creating child profile:', profile);
+    setGameState(current => {
+      const newState = {
+        ...current,
+        childProfile: profile,
+        currentScreen: 'journey' as const
+      };
+      console.log('New state with profile:', newState);
+      return newState;
+    });
     addOrUpdateProfile(profile);
   };
 
@@ -136,17 +146,26 @@ export function useGameState() {
 
   const toggleStaffAccess = () => {
     console.log('Toggling staff access, current:', gameState.showStaffAccess);
-    setGameState(current => ({
-      ...current,
-      showStaffAccess: !current.showStaffAccess
-    }));
+    setGameState(current => {
+      const newState = {
+        ...current,
+        showStaffAccess: !current.showStaffAccess
+      };
+      console.log('New staff access state:', newState.showStaffAccess);
+      return newState;
+    });
   };
 
   const resetGame = () => {
-    setGameState({
-      currentScreen: 'welcome',
-      journeySteps: DEFAULT_JOURNEY_STEPS,
-      showStaffAccess: false,
+    console.log('Resetting game to welcome screen');
+    setGameState(() => {
+      const newState = {
+        currentScreen: 'welcome' as const,
+        journeySteps: DEFAULT_JOURNEY_STEPS,
+        showStaffAccess: false,
+      };
+      console.log('Reset state:', newState);
+      return newState;
     });
   };
 

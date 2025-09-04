@@ -60,7 +60,10 @@ export function StaffDashboard() {
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => updateCurrentScreen('welcome')}
+              onClick={() => {
+                console.log('Back to App clicked in staff dashboard');
+                updateCurrentScreen('welcome');
+              }}
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
               Back to App

@@ -86,7 +86,10 @@ export function CelebrationScreen() {
         <div className="space-y-4">
           <Button
             size="lg"
-            onClick={() => updateCurrentScreen('journey')}
+            onClick={() => {
+              console.log('See Journey button clicked');
+              updateCurrentScreen('journey');
+            }}
             className="w-full touch-target font-fredoka text-lg hover-lift"
           >
             <span>See My Journey</span>
@@ -97,13 +100,27 @@ export function CelebrationScreen() {
             variant="outline"
             size="lg"
             onClick={() => {
+              console.log('Start New Adventure button clicked');
               resetGame();
-              updateCurrentScreen('welcome');
             }}
             className="w-full touch-target font-fredoka text-lg hover-lift"
           >
             <span>Start New Adventure</span>
             <span className="text-xl ml-2">🚀</span>
+          </Button>
+          
+          {/* Home Button - explicit navigation */}
+          <Button
+            variant="secondary"
+            size="lg"
+            onClick={() => {
+              console.log('Back to Home button clicked');
+              updateCurrentScreen('welcome');
+            }}
+            className="w-full touch-target font-fredoka text-lg hover-lift"
+          >
+            <span>Back to Home</span>
+            <span className="text-xl ml-2">🏠</span>
           </Button>
         </div>
 
