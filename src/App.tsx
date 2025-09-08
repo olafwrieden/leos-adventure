@@ -1,31 +1,40 @@
-import { useGameState } from '@/hooks/use-game-state';
-import { WelcomeScreen } from '@/components/screens/WelcomeScreen';
-import { AvatarCreationScreen } from '@/components/screens/AvatarCreationScreen';
-import { JourneyScreen } from '@/components/screens/JourneyScreen';
-import { CheckInScreen } from '@/components/screens/CheckInScreen';
-import { CelebrationScreen } from '@/components/screens/CelebrationScreen';
-import { StaffDashboard } from '@/components/screens/StaffDashboard';
-import { JourneySetupScreen } from '@/components/screens/JourneySetupScreen';
-import { Toaster } from '@/components/ui/sonner';
+import { AvatarCreationScreen } from "@/components/screens/AvatarCreationScreen";
+import { CelebrationScreen } from "@/components/screens/CelebrationScreen";
+import { CheckInScreen } from "@/components/screens/CheckInScreen";
+import { JourneyScreen } from "@/components/screens/JourneyScreen";
+import { JourneySetupScreen } from "@/components/screens/JourneySetupScreen";
+import { StaffDashboard } from "@/components/screens/StaffDashboard";
+import { WelcomeScreen } from "@/components/screens/WelcomeScreen";
+import { Toaster } from "@/components/ui/sonner";
+import { useSharedGameState } from "@/contexts/GameStateContext";
+import { useEffect } from "react";
 
 function App() {
-  const { gameState } = useGameState();
+  const { gameState } = useSharedGameState();
+
+  // Debug: log gameState on every render
+  console.log("App render - gameState:", gameState);
+
+  // UseEffect Hook when currentScreen changes
+  useEffect(() => {
+    console.log("Current screen changed to:", gameState.currentScreen);
+  }, [gameState.currentScreen]);
 
   const renderCurrentScreen = () => {
     switch (gameState.currentScreen) {
-      case 'welcome':
+      case "welcome":
         return <WelcomeScreen />;
-      case 'avatar-creation':
+      case "avatar-creation":
         return <AvatarCreationScreen />;
-      case 'journey':
+      case "journey":
         return <JourneyScreen />;
-      case 'check-in':
+      case "check-in":
         return <CheckInScreen />;
-      case 'celebration':
+      case "celebration":
         return <CelebrationScreen />;
-      case 'staff-dashboard':
+      case "staff-dashboard":
         return <StaffDashboard />;
-      case 'journey-setup':
+      case "journey-setup":
         return <JourneySetupScreen />;
       default:
         return <WelcomeScreen />;

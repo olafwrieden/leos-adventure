@@ -1,23 +1,60 @@
-# ✨ Welcome to Your Spark Template!
-You've just launched your brand-new Spark Template Codespace — everything’s fired up and ready for you to explore, build, and create with Spark!
+# 🦁 Leo's Adventures: Hospital Journey MVP
 
-This template is your blank canvas. It comes with a minimal setup to help you get started quickly with Spark development.
+> A gamified web app to support non-verbal children through hospital visits with interactive avatars, emotional check-ins, and visual journey mapping.
 
-🚀 What's Inside?
-- A clean, minimal Spark environment
-- Pre-configured for local development
-- Ready to scale with your ideas
-  
-🧠 What Can You Do?
+## 🌟 Key Experience Qualities
 
-Right now, this is just a starting point — the perfect place to begin building and testing your Spark applications.
+- **Comforting:** Friendly visuals and positive reinforcement create a sense of safety.
+- **Engaging:** Interactive elements, rewards, and gamification keep children involved.
+- **Empowering:** Children can express themselves and understand their hospital journey.
 
-🧹 Just Exploring?
-No problem! If you were just checking things out and don’t need to keep this code:
+---
 
-- Simply delete your Spark.
-- Everything will be cleaned up — no traces left behind.
+## 🚀 Features
 
-📄 License For Spark Template Resources 
+### 🦁 Avatar Creation & Selection
 
-The Spark Template files and resources from GitHub are licensed under the terms of the MIT license, Copyright GitHub, Inc.
+Children create and customize a friendly animal companion to guide them through their visit.
+
+### � Emotional Check-ins
+
+Visual emotion selection lets children communicate feelings non-verbally to staff.
+
+### 😣 Pain Level Reporting
+
+Child-friendly pain scale using expressive icons for easy, accurate reporting.
+
+### 🗺️ Visual Hospital Journey Map
+
+Game-like progression shows hospital departments as colorful destinations, reducing anxiety.
+
+### 🏅 Reward & Recognition System
+
+Instant feedback, badge collection, and a "Health Hero" certificate motivate and celebrate progress.
+
+### � Real-time Data Dashboard (Staff View)
+
+Live updates of emotional state, pain levels, and journey progress for personalized care.
+
+---
+
+## 💡 Why Leo's Adventures?
+
+- Designed for non-verbal and anxious children
+- Empowers kids and supports staff with real-time insights
+- Gamifies the medical experience for positive associations
+
+---
+
+## 🛠️ Getting Started
+
+1. Clone the repo
+2. Install dependencies: `npm install`
+3. Start the app: `npm run dev`
+4. Scan the QR code or open in browser to begin the journey
+
+---
+
+## 📄 License
+
+MIT License
