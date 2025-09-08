@@ -1,54 +1,63 @@
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useAllProfiles } from '@/hooks/use-all-profiles';
-import { useGameState } from '@/hooks/use-game-state';
-import { ChildProfile } from '@/types';
-import { EMOTIONS, PAIN_LEVELS } from '@/lib/constants';
-import { ArrowLeft, Download, Users, Clock, TrendUp, Plus } from '@phosphor-icons/react';
-import { AvatarDisplay } from '@/components/avatar/AvatarDisplay';
-import { useState } from 'react';
+import { AvatarDisplay } from "@/components/avatar/AvatarDisplay";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useSharedGameState } from "@/contexts/GameStateContext";
+import { useProfiles } from "@/contexts/ProfilesContext";
+import { EMOTIONS, PAIN_LEVELS } from "@/lib/constants";
+import { ChildProfile } from "@/types";
+import {
+  ArrowLeftIcon,
+  ClockIcon,
+  DownloadIcon,
+  PlusIcon,
+  TrendUpIcon,
+  UsersIcon,
+} from "@phosphor-icons/react/ssr";
+import { useState } from "react";
 
 export function StaffDashboard() {
-  const { updateCurrentScreen, setCurrentScreen } = useGameState();
-  const { allProfiles } = useAllProfiles();
-  const [selectedProfile, setSelectedProfile] = useState<ChildProfile | null>(null);
+  const { updateCurrentScreen, setCurrentScreen } = useSharedGameState();
+  const { allProfiles: profiles, addOrUpdateProfile } = useProfiles();
+  const [selectedProfile, setSelectedProfile] = useState<ChildProfile | null>(
+    null
+  );
 
   const formatTime = (date: Date) => {
-    return new Date(date).toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return new Date(date).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric' 
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
     });
   };
 
   const getLatestEmotion = (profile: ChildProfile) => {
     const latest = profile.emotions[profile.emotions.length - 1];
     if (!latest) return null;
-    const emotion = EMOTIONS.find(e => e.id === latest.emotion);
+    const emotion = EMOTIONS.find((e) => e.id === latest.emotion);
     return { ...latest, emotion: emotion };
   };
 
   const getLatestPain = (profile: ChildProfile) => {
     const latest = profile.painLevels[profile.painLevels.length - 1];
     if (!latest) return null;
-    const painLevel = PAIN_LEVELS.find(p => p.level === latest.level);
+    const painLevel = PAIN_LEVELS.find((p) => p.level === latest.level);
     return { ...latest, painLevel: painLevel };
   };
 
   const getPainTrend = (profile: ChildProfile) => {
-    if (profile.painLevels.length < 2) return 'stable';
+    if (profile.painLevels.length < 2) return "stable";
     const recent = profile.painLevels.slice(-2);
-    if (recent[1].level > recent[0].level) return 'increasing';
-    if (recent[1].level < recent[0].level) return 'decreasing';
-    return 'stable';
+    if (recent[1].level > recent[0].level) return "increasing";
+    if (recent[1].level < recent[0].level) return "decreasing";
+    return "stable";
   };
 
   return (
@@ -57,15 +66,15 @@ export function StaffDashboard() {
       <div className="bg-card border-b p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={() => {
-                console.log('Back to App clicked in staff dashboard');
-                updateCurrentScreen('welcome');
+                console.log("Back to App clicked in staff dashboard");
+                updateCurrentScreen("welcome");
               }}
             >
-              <ArrowLeft className="w-5 h-5 mr-2" />
+              <ArrowLeftIcon className="w-5 h-5 mr-2" />
               Back to App
             </Button>
             <div>
@@ -78,15 +87,15 @@ export function StaffDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Button 
-              onClick={() => setCurrentScreen('journey-setup')}
+            <Button
+              onClick={() => setCurrentScreen("journey-setup")}
               className="touch-target"
             >
-              <Plus className="w-4 h-4 mr-2" />
+              <PlusIcon className="w-4 h-4 mr-2" />
               Setup New Journey
             </Button>
             <Button variant="outline" size="sm">
-              <Download className="w-4 h-4 mr-2" />
+              <DownloadIcon className="w-4 h-4 mr-2" />
               Export Data
             </Button>
           </div>
@@ -107,37 +116,46 @@ export function StaffDashboard() {
               {/* Stats Cards */}
               <Card className="p-6">
                 <div className="flex items-center space-x-2">
-                  <Users className="w-8 h-8 text-primary" />
-                  <div>
-                    <p className="text-2xl font-bold">{allProfiles?.length ?? 0}</p>
-                    <p className="text-sm text-muted-foreground">Active Patients</p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-6">
-                <div className="flex items-center space-x-2">
-                  <Clock className="w-8 h-8 text-accent" />
+                  <UsersIcon className="w-8 h-8 text-primary" />
                   <div>
                     <p className="text-2xl font-bold">
-                      {allProfiles?.filter(p => p.emotions.length > 0).length ?? 0}
+                      {profiles?.length ?? 0}
                     </p>
-                    <p className="text-sm text-muted-foreground">Recent Check-ins</p>
+                    <p className="text-sm text-muted-foreground">
+                      Active Patients
+                    </p>
                   </div>
                 </div>
               </Card>
 
               <Card className="p-6">
                 <div className="flex items-center space-x-2">
-                  <TrendUp className="w-8 h-8 text-secondary" />
+                  <ClockIcon className="w-8 h-8 text-accent" />
                   <div>
                     <p className="text-2xl font-bold">
-                      {allProfiles?.filter(p => {
+                      {profiles?.filter((p) => p.emotions.length > 0).length ??
+                        0}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Recent Check-ins
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <div className="flex items-center space-x-2">
+                  <TrendUpIcon className="w-8 h-8 text-secondary" />
+                  <div>
+                    <p className="text-2xl font-bold">
+                      {profiles?.filter((p) => {
                         const latest = getLatestPain(p);
                         return latest && latest.level <= 2;
                       }).length ?? 0}
                     </p>
-                    <p className="text-sm text-muted-foreground">Comfortable Patients</p>
+                    <p className="text-sm text-muted-foreground">
+                      Comfortable Patients
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -145,14 +163,19 @@ export function StaffDashboard() {
 
             {/* Recent Activity */}
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Recent Patient Activity</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Recent Patient Activity
+              </h3>
               <div className="space-y-4">
-                {(allProfiles ?? []).slice(-5).map((profile) => {
+                {(profiles ?? []).slice(-5).map((profile) => {
                   const latestEmotion = getLatestEmotion(profile);
                   const latestPain = getLatestPain(profile);
-                  
+
                   return (
-                    <div key={profile.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                    <div
+                      key={profile.id}
+                      className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
+                    >
                       <div className="flex items-center space-x-3">
                         <AvatarDisplay avatar={profile.avatar} size="sm" />
                         <div>
@@ -166,11 +189,17 @@ export function StaffDashboard() {
                         {latestEmotion && (
                           <div className="flex items-center space-x-1">
                             <span>{latestEmotion.emotion?.emoji}</span>
-                            <span className="text-sm">{latestEmotion.emotion?.name}</span>
+                            <span className="text-sm">
+                              {latestEmotion.emotion?.name}
+                            </span>
                           </div>
                         )}
                         {latestPain && (
-                          <Badge variant={latestPain.level > 3 ? 'destructive' : 'secondary'}>
+                          <Badge
+                            variant={
+                              latestPain.level > 3 ? "destructive" : "secondary"
+                            }
+                          >
                             Pain: {latestPain.level}/5
                           </Badge>
                         )}
@@ -189,16 +218,18 @@ export function StaffDashboard() {
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4">Select Patient</h3>
                 <div className="space-y-3">
-                  {(allProfiles ?? []).map((profile) => {
+                  {(profiles ?? []).map((profile) => {
                     const latestEmotion = getLatestEmotion(profile);
                     const latestPain = getLatestPain(profile);
                     const painTrend = getPainTrend(profile);
-                    
+
                     return (
-                      <div 
+                      <div
                         key={profile.id}
                         className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                          selectedProfile?.id === profile.id ? 'bg-primary/10 ring-2 ring-primary/20' : 'bg-muted/30 hover:bg-muted/50'
+                          selectedProfile?.id === profile.id
+                            ? "bg-primary/10 ring-2 ring-primary/20"
+                            : "bg-muted/30 hover:bg-muted/50"
                         }`}
                         onClick={() => setSelectedProfile(profile)}
                       >
@@ -208,20 +239,31 @@ export function StaffDashboard() {
                             <div>
                               <p className="font-medium">{profile.name}</p>
                               <p className="text-sm text-muted-foreground">
-                                Step {profile.currentStep + 1} • {formatTime(profile.visitStartTime)}
+                                Step {profile.currentStep + 1} •{" "}
+                                {formatTime(profile.visitStartTime)}
                               </p>
                             </div>
                           </div>
                           <div className="flex items-center space-x-2">
                             {latestPain && (
-                              <Badge 
-                                variant={latestPain.level > 3 ? 'destructive' : latestPain.level > 1 ? 'default' : 'secondary'}
+                              <Badge
+                                variant={
+                                  latestPain.level > 3
+                                    ? "destructive"
+                                    : latestPain.level > 1
+                                    ? "default"
+                                    : "secondary"
+                                }
                               >
                                 {latestPain.painLevel?.emoji} {latestPain.level}
                               </Badge>
                             )}
-                            {painTrend === 'increasing' && <span className="text-red-500">↑</span>}
-                            {painTrend === 'decreasing' && <span className="text-green-500">↓</span>}
+                            {painTrend === "increasing" && (
+                              <span className="text-red-500">↑</span>
+                            )}
+                            {painTrend === "decreasing" && (
+                              <span className="text-green-500">↓</span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -233,15 +275,25 @@ export function StaffDashboard() {
               {/* Patient Details */}
               {selectedProfile && (
                 <Card className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Patient Details</h3>
+                  <h3 className="text-lg font-semibold mb-4">
+                    Patient Details
+                  </h3>
                   <div className="space-y-4">
                     {/* Patient Info */}
                     <div className="flex items-center space-x-4 p-3 bg-muted/30 rounded-lg">
-                      <AvatarDisplay avatar={selectedProfile.avatar} size="md" showName />
+                      <AvatarDisplay
+                        avatar={selectedProfile.avatar}
+                        size="md"
+                        showName
+                      />
                       <div>
-                        <p className="text-lg font-semibold">{selectedProfile.name}</p>
+                        <p className="text-lg font-semibold">
+                          {selectedProfile.name}
+                        </p>
                         <p className="text-sm text-muted-foreground">
-                          Visit started: {formatDate(selectedProfile.visitStartTime)} at {formatTime(selectedProfile.visitStartTime)}
+                          Visit started:{" "}
+                          {formatDate(selectedProfile.visitStartTime)} at{" "}
+                          {formatTime(selectedProfile.visitStartTime)}
                         </p>
                         <p className="text-sm text-muted-foreground">
                           Current step: {selectedProfile.currentStep + 1} of 6
@@ -254,14 +306,21 @@ export function StaffDashboard() {
                       <h4 className="font-medium mb-2">Recent Emotions</h4>
                       <div className="space-y-2">
                         {selectedProfile.emotions.slice(-3).map((emotion) => {
-                          const emotionData = EMOTIONS.find(e => e.id === emotion.emotion);
+                          const emotionData = EMOTIONS.find(
+                            (e) => e.id === emotion.emotion
+                          );
                           return (
-                            <div key={emotion.id} className="flex items-center justify-between text-sm">
+                            <div
+                              key={emotion.id}
+                              className="flex items-center justify-between text-sm"
+                            >
                               <div className="flex items-center space-x-2">
                                 <span>{emotionData?.emoji}</span>
                                 <span>{emotionData?.name}</span>
                               </div>
-                              <span className="text-muted-foreground">{formatTime(emotion.timestamp)}</span>
+                              <span className="text-muted-foreground">
+                                {formatTime(emotion.timestamp)}
+                              </span>
                             </div>
                           );
                         })}
@@ -273,17 +332,36 @@ export function StaffDashboard() {
                       <h4 className="font-medium mb-2">Pain History</h4>
                       <div className="space-y-2">
                         {selectedProfile.painLevels.slice(-3).map((pain) => {
-                          const painData = PAIN_LEVELS.find(p => p.level === pain.level);
+                          const painData = PAIN_LEVELS.find(
+                            (p) => p.level === pain.level
+                          );
                           return (
-                            <div key={pain.id} className="flex items-center justify-between text-sm">
+                            <div
+                              key={pain.id}
+                              className="flex items-center justify-between text-sm"
+                            >
                               <div className="flex items-center space-x-2">
                                 <span>{painData?.emoji}</span>
                                 <span>Level {pain.level}/5</span>
-                                <Badge variant={pain.level > 3 ? 'destructive' : pain.level > 1 ? 'default' : 'secondary'}>
-                                  {pain.level > 3 ? 'High' : pain.level > 1 ? 'Moderate' : 'Low'}
+                                <Badge
+                                  variant={
+                                    pain.level > 3
+                                      ? "destructive"
+                                      : pain.level > 1
+                                      ? "default"
+                                      : "secondary"
+                                  }
+                                >
+                                  {pain.level > 3
+                                    ? "High"
+                                    : pain.level > 1
+                                    ? "Moderate"
+                                    : "Low"}
                                 </Badge>
                               </div>
-                              <span className="text-muted-foreground">{formatTime(pain.timestamp)}</span>
+                              <span className="text-muted-foreground">
+                                {formatTime(pain.timestamp)}
+                              </span>
                             </div>
                           );
                         })}
@@ -296,9 +374,14 @@ export function StaffDashboard() {
                       <div className="flex flex-wrap gap-2">
                         {selectedProfile.badges.map((badgeId) => (
                           <Badge key={badgeId} variant="secondary">
-                            🏆 {badgeId.split('-').map(word => 
-                              word.charAt(0).toUpperCase() + word.slice(1)
-                            ).join(' ')}
+                            🏆{" "}
+                            {badgeId
+                              .split("-")
+                              .map(
+                                (word) =>
+                                  word.charAt(0).toUpperCase() + word.slice(1)
+                              )
+                              .join(" ")}
                           </Badge>
                         ))}
                       </div>
@@ -318,11 +401,19 @@ export function StaffDashboard() {
                   <h4 className="font-medium mb-2">Emotion Distribution</h4>
                   <div className="space-y-2">
                     {EMOTIONS.map((emotion) => {
-                      const count = (allProfiles ?? []).reduce((acc, profile) => 
-                        acc + profile.emotions.filter(e => e.emotion === emotion.id).length, 0
+                      const count = (profiles ?? []).reduce(
+                        (acc, profile) =>
+                          acc +
+                          profile.emotions.filter(
+                            (e) => e.emotion === emotion.id
+                          ).length,
+                        0
                       );
                       return (
-                        <div key={emotion.id} className="flex items-center justify-between text-sm">
+                        <div
+                          key={emotion.id}
+                          className="flex items-center justify-between text-sm"
+                        >
                           <div className="flex items-center space-x-2">
                             <span>{emotion.emoji}</span>
                             <span>{emotion.name}</span>
@@ -338,11 +429,19 @@ export function StaffDashboard() {
                   <h4 className="font-medium mb-2">Pain Level Distribution</h4>
                   <div className="space-y-2">
                     {PAIN_LEVELS.map((level) => {
-                      const count = (allProfiles ?? []).reduce((acc, profile) => 
-                        acc + profile.painLevels.filter(p => p.level === level.level).length, 0
+                      const count = (profiles ?? []).reduce(
+                        (acc, profile) =>
+                          acc +
+                          profile.painLevels.filter(
+                            (p) => p.level === level.level
+                          ).length,
+                        0
                       );
                       return (
-                        <div key={level.level} className="flex items-center justify-between text-sm">
+                        <div
+                          key={level.level}
+                          className="flex items-center justify-between text-sm"
+                        >
                           <div className="flex items-center space-x-2">
                             <span>{level.emoji}</span>
                             <span>Level {level.level}</span>

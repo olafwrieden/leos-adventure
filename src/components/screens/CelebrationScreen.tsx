@@ -1,10 +1,11 @@
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { useGameState } from '@/hooks/use-game-state';
-import { AvatarDisplay } from '@/components/avatar/AvatarDisplay';
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useGameState } from "@/hooks/use-game-state";
+import { AvatarDisplay } from "@/components/avatar/AvatarDisplay";
+import { useSharedGameState } from "@/contexts/GameStateContext";
 
 export function CelebrationScreen() {
-  const { gameState, updateCurrentScreen, resetGame } = useGameState();
+  const { gameState, updateCurrentScreen, resetGame } = useSharedGameState();
   const childProfile = gameState?.childProfile;
 
   if (!childProfile) {
@@ -17,7 +18,7 @@ export function CelebrationScreen() {
             </h2>
             <Button
               size="lg"
-              onClick={() => updateCurrentScreen('welcome')}
+              onClick={() => updateCurrentScreen("welcome")}
               className="w-full touch-target font-fredoka text-lg hover-lift"
             >
               Go to Welcome
@@ -36,8 +37,18 @@ export function CelebrationScreen() {
           <div className="text-8xl animate-sparkle">🏆</div>
           <div className="flex justify-center space-x-2">
             <span className="text-2xl animate-bounce-gentle">⭐</span>
-            <span className="text-3xl animate-bounce-gentle" style={{animationDelay: '0.1s'}}>✨</span>
-            <span className="text-2xl animate-bounce-gentle" style={{animationDelay: '0.2s'}}>🌟</span>
+            <span
+              className="text-3xl animate-bounce-gentle"
+              style={{ animationDelay: "0.1s" }}
+            >
+              ✨
+            </span>
+            <span
+              className="text-2xl animate-bounce-gentle"
+              style={{ animationDelay: "0.2s" }}
+            >
+              🌟
+            </span>
           </div>
         </div>
 
@@ -53,7 +64,7 @@ export function CelebrationScreen() {
                 {childProfile.name}, you did AMAZING!
               </h2>
               <p className="text-foreground/80 leading-relaxed">
-                You completed your hospital adventure with courage and bravery. 
+                You completed your hospital adventure with courage and bravery.
                 You're officially a Health Hero!
               </p>
             </div>
@@ -66,15 +77,18 @@ export function CelebrationScreen() {
             </h3>
             <div className="grid grid-cols-2 gap-2">
               {childProfile.badges.map((badgeId) => (
-                <div 
+                <div
                   key={badgeId}
                   className="flex items-center space-x-2 bg-accent/20 rounded-lg px-3 py-2"
                 >
                   <span className="text-xl">🏆</span>
                   <span className="text-sm font-fredoka font-medium">
-                    {badgeId.split('-').map(word => 
-                      word.charAt(0).toUpperCase() + word.slice(1)
-                    ).join(' ')}
+                    {badgeId
+                      .split("-")
+                      .map(
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(" ")}
                   </span>
                 </div>
               ))}
@@ -87,20 +101,20 @@ export function CelebrationScreen() {
           <Button
             size="lg"
             onClick={() => {
-              console.log('See Journey button clicked');
-              updateCurrentScreen('journey');
+              console.log("See Journey button clicked");
+              updateCurrentScreen("journey");
             }}
             className="w-full touch-target font-fredoka text-lg hover-lift"
           >
             <span>See My Journey</span>
             <span className="text-xl ml-2">📍</span>
           </Button>
-          
+
           <Button
             variant="outline"
             size="lg"
             onClick={() => {
-              console.log('Start New Adventure button clicked');
+              console.log("Start New Adventure button clicked");
               resetGame();
             }}
             className="w-full touch-target font-fredoka text-lg hover-lift"
@@ -108,14 +122,14 @@ export function CelebrationScreen() {
             <span>Start New Adventure</span>
             <span className="text-xl ml-2">🚀</span>
           </Button>
-          
+
           {/* Home Button - explicit navigation */}
           <Button
             variant="secondary"
             size="lg"
             onClick={() => {
-              console.log('Back to Home button clicked');
-              updateCurrentScreen('welcome');
+              console.log("Back to Home button clicked");
+              updateCurrentScreen("welcome");
             }}
             className="w-full touch-target font-fredoka text-lg hover-lift"
           >

@@ -1,18 +1,27 @@
-import { useGameState } from "@/hooks/use-game-state";
-import { WelcomeScreen } from "@/components/screens/WelcomeScreen";
 import { AvatarCreationScreen } from "@/components/screens/AvatarCreationScreen";
-import { JourneyScreen } from "@/components/screens/JourneyScreen";
-import { CheckInScreen } from "@/components/screens/CheckInScreen";
 import { CelebrationScreen } from "@/components/screens/CelebrationScreen";
-import { StaffDashboard } from "@/components/screens/StaffDashboard";
+import { CheckInScreen } from "@/components/screens/CheckInScreen";
+import { JourneyScreen } from "@/components/screens/JourneyScreen";
 import { JourneySetupScreen } from "@/components/screens/JourneySetupScreen";
+import { StaffDashboard } from "@/components/screens/StaffDashboard";
+import { WelcomeScreen } from "@/components/screens/WelcomeScreen";
 import { Toaster } from "@/components/ui/sonner";
+import { useSharedGameState } from "@/contexts/GameStateContext";
+import { useEffect } from "react";
 
 function App() {
-  const { gameState } = useGameState();
+  const { gameState } = useSharedGameState();
+
+  // Debug: log gameState on every render
+  console.log("App render - gameState:", gameState);
+
+  // UseEffect Hook when currentScreen changes
+  useEffect(() => {
+    console.log("Current screen changed to:", gameState.currentScreen);
+  }, [gameState.currentScreen]);
 
   const renderCurrentScreen = () => {
-    switch (gameState?.currentScreen) {
+    switch (gameState.currentScreen) {
       case "welcome":
         return <WelcomeScreen />;
       case "avatar-creation":

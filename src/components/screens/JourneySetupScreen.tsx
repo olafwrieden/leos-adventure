@@ -1,7 +1,4 @@
-import { useState } from "react";
-import { useGameState } from "@/hooks/use-game-state";
-import { journeyTemplates } from "@/data/journey-templates";
-import { JourneyTemplate } from "@/types";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,14 +7,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Clock, MapPin, Users, MagnifyingGlass } from "@phosphor-icons/react";
+import { useSharedGameState } from "@/contexts/GameStateContext";
+import { journeyTemplates } from "@/data/journey-templates";
+import { JourneyTemplate } from "@/types";
+import {
+  ArrowLeftIcon,
+  ClockIcon,
+  MagnifyingGlassIcon,
+  MapPinIcon,
+  UsersIcon,
+} from "@phosphor-icons/react/ssr";
+import { useState } from "react";
 
 export function JourneySetupScreen() {
   const { setCurrentScreen, setSelectedJourneyTemplate, gameState } =
-    useGameState();
+    useSharedGameState();
   const [selectedTemplate, setSelectedTemplate] =
     useState<JourneyTemplate | null>(null);
   const [patientName, setPatientName] = useState("");
@@ -48,7 +54,7 @@ export function JourneySetupScreen() {
             onClick={() => setCurrentScreen("staff-dashboard")}
             className="touch-target"
           >
-            <ArrowLeft size={24} />
+            <ArrowLeftIcon size={24} />
           </Button>
           <div>
             <h1 className="font-fredoka text-3xl font-bold text-foreground">
@@ -65,7 +71,7 @@ export function JourneySetupScreen() {
           <div className="lg:col-span-2 space-y-4">
             {/* Search */}
             <div className="relative">
-              <MagnifyingGlass
+              <MagnifyingGlassIcon
                 size={20}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
               />
@@ -109,17 +115,17 @@ export function JourneySetupScreen() {
                     <div className="space-y-3">
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
-                          <MapPin size={16} />
+                          <MapPinIcon size={16} />
                           {template.department}
                         </div>
                         <div className="flex items-center gap-1">
-                          <Clock size={16} />
+                          <ClockIcon size={16} />
                           {template.estimatedDuration}
                         </div>
                       </div>
 
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <Users size={16} />
+                        <UsersIcon size={16} />
                         <span>{template.steps.length} steps in journey</span>
                       </div>
 
@@ -148,7 +154,7 @@ export function JourneySetupScreen() {
 
             {filteredTemplates.length === 0 && (
               <div className="text-center py-12">
-                <MagnifyingGlass
+                <MagnifyingGlassIcon
                   size={48}
                   className="mx-auto text-muted-foreground mb-4"
                 />
@@ -204,15 +210,15 @@ export function JourneySetupScreen() {
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm">
-                      <MapPin size={16} className="text-muted-foreground" />
+                      <MapPinIcon size={16} className="text-muted-foreground" />
                       <span>{selectedTemplate.department}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <Clock size={16} className="text-muted-foreground" />
+                      <ClockIcon size={16} className="text-muted-foreground" />
                       <span>{selectedTemplate.estimatedDuration}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <Users size={16} className="text-muted-foreground" />
+                      <UsersIcon size={16} className="text-muted-foreground" />
                       <span>{selectedTemplate.steps.length} steps</span>
                     </div>
                   </div>

@@ -22,4 +22,11 @@ export default defineConfig({
       '@': resolve(projectRoot, 'src')
     }
   },
+  build: {
+    lib: {
+      name: "Phosphor",
+      entry: resolve("src/index.ts"),
+      fileName: (format, name) => `${name}.${format}.js`,
+    },
+  }
 });

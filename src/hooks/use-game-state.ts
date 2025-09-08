@@ -1,18 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useKV } from '@github/spark/hooks';
-import { GameState, ChildProfile, JourneyStep, JourneyTemplate } from '@/types';
-import { DEFAULT_JOURNEY_STEPS } from '@/lib/constants';
+import { useProfiles } from '@/contexts/ProfilesContext';
 import { journeyTemplates } from '@/data/journey-templates';
-import { useAllProfiles } from './use-all-profiles';
+import { ChildProfile, GameState, JourneyStep, JourneyTemplate } from '@/types';
+import { useEffect, useState } from 'react';
 
 export function useGameState() {
-  const [gameState, setGameState] = useKV<GameState>('leos-adventures-state', {
+  const [gameState, setGameState] = useState<GameState>({
     currentScreen: 'welcome',
     journeySteps: [], // Will be set by template
     showStaffAccess: false,
   });
 
-  const { addOrUpdateProfile } = useAllProfiles();
+  const { addOrUpdateProfile } = useProfiles();
 
   // Initialize journey steps if empty and no template selected
   useEffect(() => {
@@ -22,7 +20,7 @@ export function useGameState() {
       const defaultTemplate = journeyTemplates[0];
       setSelectedJourneyTemplate(defaultTemplate);
     }
-  }, [gameState?.journeySteps?.length, gameState?.selectedJourneyTemplate]);
+  }, [gameState.journeySteps.length, gameState.selectedJourneyTemplate]);
 
   const updateCurrentScreen = (screen: GameState['currentScreen']) => {
     console.log('Updating screen to:', screen);

@@ -1,13 +1,24 @@
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { useGameState } from '@/hooks/use-game-state';
-import { ArrowLeft, Heart, Smiley } from '@phosphor-icons/react';
-import { JourneyMap } from '@/components/journey/JourneyMap';
-import { AvatarDisplay } from '@/components/avatar/AvatarDisplay';
-import { toast } from 'sonner';
+import { AvatarDisplay } from "@/components/avatar/AvatarDisplay";
+import { JourneyMap } from "@/components/journey/JourneyMap";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useSharedGameState } from "@/contexts/GameStateContext";
+import {
+  ArrowLeftIcon,
+  HeartIcon,
+  SmileyIcon,
+} from "@phosphor-icons/react/ssr";
+import { toast } from "sonner";
 
 export function JourneyScreen() {
-  const { gameState, updateCurrentScreen, updateJourneyStep, awardBadge, createTestProfile, createTestProfiles } = useGameState();
+  const {
+    gameState,
+    updateCurrentScreen,
+    updateJourneyStep,
+    awardBadge,
+    createTestProfile,
+    createTestProfiles,
+  } = useSharedGameState();
   const childProfile = gameState?.childProfile;
   const journeySteps = gameState?.journeySteps;
 
@@ -21,7 +32,7 @@ export function JourneyScreen() {
             </h2>
             <Button
               size="lg"
-              onClick={() => updateCurrentScreen('welcome')}
+              onClick={() => updateCurrentScreen("welcome")}
               className="w-full touch-target font-fredoka text-lg hover-lift"
             >
               Start Adventure
@@ -32,22 +43,23 @@ export function JourneyScreen() {
     );
   }
 
-  const currentStep = journeySteps?.find(step => step.current);
-  const completedCount = journeySteps?.filter(step => step.completed).length ?? 0;
+  const currentStep = journeySteps?.find((step) => step.current);
+  const completedCount =
+    journeySteps?.filter((step) => step.completed).length ?? 0;
   const totalSteps = journeySteps?.length ?? 0;
 
   const handleStepComplete = (stepId: string) => {
-    console.log('Completing step:', stepId);
+    console.log("Completing step:", stepId);
     updateJourneyStep(stepId, true);
-    awardBadge('step-completed');
-    toast.success('🎉 Step completed! You\'re doing amazing!');
-    
+    awardBadge("step-completed");
+    toast.success("🎉 Step completed! You're doing amazing!");
+
     // Check if this was the last step
-    const stepIndex = journeySteps?.findIndex(s => s.id === stepId) ?? -1;
+    const stepIndex = journeySteps?.findIndex((s) => s.id === stepId) ?? -1;
     if (stepIndex === (journeySteps?.length ?? 0) - 1) {
       // Last step completed, go to celebration
-      toast.success('🏆 Adventure complete! You\'re a Health Hero!');
-      setTimeout(() => updateCurrentScreen('celebration'), 2000);
+      toast.success("🏆 Adventure complete! You're a Health Hero!");
+      setTimeout(() => updateCurrentScreen("celebration"), 2000);
     }
   };
 
@@ -55,15 +67,15 @@ export function JourneyScreen() {
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10">
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-card/50 backdrop-blur-sm">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           size="sm"
-          onClick={() => updateCurrentScreen('welcome')}
+          onClick={() => updateCurrentScreen("welcome")}
         >
-          <ArrowLeft className="w-5 h-5 mr-2" />
+          <ArrowLeftIcon className="w-5 h-5 mr-2" />
           Home
         </Button>
-        
+
         <div className="text-center">
           <h1 className="text-lg font-fredoka font-bold text-foreground">
             {childProfile.name}'s Adventure
@@ -76,9 +88,9 @@ export function JourneyScreen() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => updateCurrentScreen('check-in')}
+          onClick={() => updateCurrentScreen("check-in")}
         >
-          <Heart className="w-5 h-5" />
+          <HeartIcon className="w-5 h-5" />
         </Button>
       </div>
 
@@ -114,7 +126,10 @@ export function JourneyScreen() {
                 </p>
               </div>
             )}
-            <JourneyMap steps={journeySteps ?? []} onStepComplete={handleStepComplete} />
+            <JourneyMap
+              steps={journeySteps ?? []}
+              onStepComplete={handleStepComplete}
+            />
           </div>
         </Card>
 
@@ -123,63 +138,31 @@ export function JourneyScreen() {
           <Button
             variant="outline"
             size="lg"
-            onClick={() => updateCurrentScreen('check-in')}
+            onClick={() => updateCurrentScreen("check-in")}
             className="touch-target font-fredoka hover-lift"
           >
-            <Smiley className="w-5 h-5 mr-2" weight="fill" />
+            <SmileyIcon className="w-5 h-5 mr-2" weight="fill" />
             How I Feel
           </Button>
-          
+
           <Button
             variant="outline"
             size="lg"
-            onClick={() => updateCurrentScreen('check-in')}
+            onClick={() => updateCurrentScreen("check-in")}
             className="touch-target font-fredoka hover-lift"
           >
-            <Heart className="w-5 h-5 mr-2" weight="fill" />
+            <HeartIcon className="w-5 h-5 mr-2" weight="fill" />
             My Comfort
           </Button>
         </div>
 
-        {/* Test Navigation Buttons */}
-        <div className="grid grid-cols-2 gap-4">
-          <Button
-            variant="secondary"
-            size="lg"
-            onClick={() => {
-              console.log('Navigating to celebration');
-              // Create a test profile if none exists
-              if (!childProfile) {
-                createTestProfile();
-              }
-              updateCurrentScreen('celebration');
-            }}
-            className="touch-target font-fredoka hover-lift"
-          >
-            🏆 Test Celebration
-          </Button>
-          
-          <Button
-            variant="secondary"
-            size="lg"
-            onClick={() => {
-              console.log('Navigating to staff dashboard');
-              createTestProfiles(); // Ensure we have test data
-              updateCurrentScreen('staff-dashboard');
-            }}
-            className="touch-target font-fredoka hover-lift"
-          >
-            👩‍⚕️ Test Staff Dashboard
-          </Button>
-        </div>
-        
         {/* Direct Home Button */}
         <Button
           variant="outline"
           size="lg"
           onClick={() => {
-            console.log('Direct home navigation');
-            updateCurrentScreen('welcome');
+            console.log("Direct home navigation");
+            updateCurrentScreen("welcome");
           }}
           className="w-full touch-target font-fredoka hover-lift"
         >
@@ -194,15 +177,18 @@ export function JourneyScreen() {
             </h3>
             <div className="flex flex-wrap justify-center gap-2">
               {childProfile.badges.slice(-3).map((badgeId) => (
-                <div 
+                <div
                   key={badgeId}
                   className="flex items-center space-x-1 bg-accent/20 rounded-full px-3 py-1"
                 >
                   <span className="text-xl">🏆</span>
                   <span className="text-sm font-fredoka font-medium">
-                    {badgeId.split('-').map(word => 
-                      word.charAt(0).toUpperCase() + word.slice(1)
-                    ).join(' ')}
+                    {badgeId
+                      .split("-")
+                      .map(
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(" ")}
                   </span>
                 </div>
               ))}

@@ -1,8 +1,8 @@
-import { useKV } from '@github/spark/hooks';
 import { ChildProfile } from '@/types';
+import { useState } from 'react';
 
 export function useAllProfiles() {
-  const [allProfiles, setAllProfiles] = useKV<ChildProfile[]>('all-child-profiles', []);
+  const [allProfiles, setAllProfiles] = useState<ChildProfile[]>([]);
 
   const addOrUpdateProfile = (profile: ChildProfile) => {
     setAllProfiles(current => {
