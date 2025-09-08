@@ -1,21 +1,34 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { useGameState } from '@/hooks/use-game-state';
-import { EMOTIONS, PAIN_LEVELS } from '@/lib/constants';
-import { EmotionEntry, PainEntry } from '@/types';
-import { ArrowLeft, Heart, Smiley } from '@phosphor-icons/react';
-import { toast } from 'sonner';
-import { AvatarDisplay } from '@/components/avatar/AvatarDisplay';
+import { AvatarDisplay } from "@/components/avatar/AvatarDisplay";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useSharedGameState } from "@/contexts/GameStateContext";
+import { EMOTIONS, PAIN_LEVELS } from "@/lib/constants";
+import { EmotionEntry, PainEntry } from "@/types";
+import {
+  ArrowLeftIcon,
+  HeartIcon,
+  SmileyIcon,
+} from "@phosphor-icons/react/ssr";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function CheckInScreen() {
-  const { gameState, updateCurrentScreen, addEmotionEntry, addPainEntry, awardBadge } = useGameState();
-  const [checkInType, setCheckInType] = useState<'emotion' | 'pain' | null>(null);
-  const [selectedEmotion, setSelectedEmotion] = useState<string>('');
+  const {
+    gameState,
+    updateCurrentScreen,
+    addEmotionEntry,
+    addPainEntry,
+    awardBadge,
+  } = useSharedGameState();
+  const [checkInType, setCheckInType] = useState<"emotion" | "pain" | null>(
+    null
+  );
+  const [selectedEmotion, setSelectedEmotion] = useState<string>("");
   const [selectedPain, setSelectedPain] = useState<number | null>(null);
 
-  const { childProfile, journeySteps } = gameState;
-  
+  const childProfile = gameState?.childProfile;
+  const journeySteps = gameState?.journeySteps;
+
   if (!childProfile) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-accent/20 via-background to-primary/20 flex flex-col items-center justify-center p-4">
@@ -26,7 +39,7 @@ export function CheckInScreen() {
             </h2>
             <Button
               size="lg"
-              onClick={() => updateCurrentScreen('welcome')}
+              onClick={() => updateCurrentScreen("welcome")}
               className="w-full touch-target font-fredoka text-lg hover-lift"
             >
               Go to Welcome
@@ -37,25 +50,29 @@ export function CheckInScreen() {
     );
   }
 
-  const currentStep = journeySteps.find(step => step.current);
+  const currentStep = journeySteps?.find((step) => step.current);
 
   const handleEmotionSubmit = () => {
     if (!selectedEmotion) return;
 
     const emotionEntry: EmotionEntry = {
       id: `emotion-${Date.now()}`,
-      emotion: selectedEmotion as EmotionEntry['emotion'],
+      emotion: selectedEmotion as EmotionEntry["emotion"],
       timestamp: new Date(),
-      journeyStep: currentStep?.id || 'unknown'
+      journeyStep: currentStep?.id || "unknown",
     };
 
     addEmotionEntry(emotionEntry);
-    awardBadge('emotion-sharer');
-    
-    const emotion = EMOTIONS.find(e => e.id === selectedEmotion);
-    toast.success(`Thanks for sharing! ${emotion?.emoji} I understand you're feeling ${emotion?.name.toLowerCase()}.`);
-    
-    setTimeout(() => updateCurrentScreen('journey'), 1500);
+    awardBadge("emotion-sharer");
+
+    const emotion = EMOTIONS.find((e) => e.id === selectedEmotion);
+    toast.success(
+      `Thanks for sharing! ${
+        emotion?.emoji
+      } I understand you're feeling ${emotion?.name.toLowerCase()}.`
+    );
+
+    setTimeout(() => updateCurrentScreen("journey"), 1500);
   };
 
   const handlePainSubmit = () => {
@@ -63,18 +80,20 @@ export function CheckInScreen() {
 
     const painEntry: PainEntry = {
       id: `pain-${Date.now()}`,
-      level: selectedPain as PainEntry['level'],
+      level: selectedPain as PainEntry["level"],
       timestamp: new Date(),
-      journeyStep: currentStep?.id || 'unknown'
+      journeyStep: currentStep?.id || "unknown",
     };
 
     addPainEntry(painEntry);
-    awardBadge('pain-reporter');
-    
-    const painLevel = PAIN_LEVELS.find(p => p.level === selectedPain);
-    toast.success(`Thank you for telling me! ${painLevel?.emoji} The nurses will help you feel better.`);
-    
-    setTimeout(() => updateCurrentScreen('journey'), 1500);
+    awardBadge("pain-reporter");
+
+    const painLevel = PAIN_LEVELS.find((p) => p.level === selectedPain);
+    toast.success(
+      `Thank you for telling me! ${painLevel?.emoji} The nurses will help you feel better.`
+    );
+
+    setTimeout(() => updateCurrentScreen("journey"), 1500);
   };
 
   if (!checkInType) {
@@ -82,12 +101,12 @@ export function CheckInScreen() {
       <div className="min-h-screen bg-gradient-to-br from-destructive/10 via-background to-accent/10">
         {/* Header */}
         <div className="flex items-center justify-between p-4">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="sm"
-            onClick={() => updateCurrentScreen('journey')}
+            onClick={() => updateCurrentScreen("journey")}
           >
-            <ArrowLeft className="w-5 h-5 mr-2" />
+            <ArrowLeftIcon className="w-5 h-5 mr-2" />
             Back
           </Button>
           <h1 className="text-xl font-fredoka font-bold text-foreground">
@@ -116,21 +135,21 @@ export function CheckInScreen() {
           <div className="max-w-md w-full space-y-4">
             <Button
               size="lg"
-              onClick={() => setCheckInType('emotion')}
+              onClick={() => setCheckInType("emotion")}
               className="w-full touch-target font-fredoka text-lg hover-lift"
               variant="outline"
             >
-              <Smiley className="w-6 h-6 mr-3" weight="fill" />
+              <SmileyIcon className="w-6 h-6 mr-3" weight="fill" />
               Tell me how you feel
             </Button>
-            
+
             <Button
               size="lg"
-              onClick={() => setCheckInType('pain')}
+              onClick={() => setCheckInType("pain")}
               className="w-full touch-target font-fredoka text-lg hover-lift"
               variant="outline"
             >
-              <Heart className="w-6 h-6 mr-3" weight="fill" />
+              <HeartIcon className="w-6 h-6 mr-3" weight="fill" />
               Tell me about your comfort
             </Button>
           </div>
@@ -143,16 +162,14 @@ export function CheckInScreen() {
     <div className="min-h-screen bg-gradient-to-br from-destructive/10 via-background to-accent/10">
       {/* Header */}
       <div className="flex items-center justify-between p-4">
-        <Button 
-          variant="ghost" 
-          size="sm"
-          onClick={() => setCheckInType(null)}
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
+        <Button variant="ghost" size="sm" onClick={() => setCheckInType(null)}>
+          <ArrowLeftIcon className="w-5 h-5 mr-2" />
           Back
         </Button>
         <h1 className="text-xl font-fredoka font-bold text-foreground">
-          {checkInType === 'emotion' ? 'How do you feel?' : 'How comfortable are you?'}
+          {checkInType === "emotion"
+            ? "How do you feel?"
+            : "How comfortable are you?"}
         </h1>
         <div className="w-16" />
       </div>
@@ -163,23 +180,24 @@ export function CheckInScreen() {
           <div className="space-y-4">
             <AvatarDisplay avatar={childProfile.avatar} size="md" />
             <p className="text-lg font-fredoka text-foreground">
-              {checkInType === 'emotion' 
+              {checkInType === "emotion"
                 ? "Tap the face that shows how you feel right now:"
-                : "Tap the face that shows how your body feels right now:"
-              }
+                : "Tap the face that shows how your body feels right now:"}
             </p>
           </div>
         </Card>
 
         {/* Emotion Selection */}
-        {checkInType === 'emotion' && (
+        {checkInType === "emotion" && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               {EMOTIONS.map((emotion) => (
-                <Card 
+                <Card
                   key={emotion.id}
                   className={`p-4 cursor-pointer touch-target hover-lift transition-all ${
-                    selectedEmotion === emotion.id ? 'ring-2 ring-primary bg-primary/5' : ''
+                    selectedEmotion === emotion.id
+                      ? "ring-2 ring-primary bg-primary/5"
+                      : ""
                   }`}
                   onClick={() => setSelectedEmotion(emotion.id)}
                 >
@@ -192,7 +210,7 @@ export function CheckInScreen() {
                 </Card>
               ))}
             </div>
-            
+
             <Button
               size="lg"
               onClick={handleEmotionSubmit}
@@ -205,14 +223,16 @@ export function CheckInScreen() {
         )}
 
         {/* Pain Level Selection */}
-        {checkInType === 'pain' && (
+        {checkInType === "pain" && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               {PAIN_LEVELS.map((level) => (
-                <Card 
+                <Card
                   key={level.level}
                   className={`p-4 cursor-pointer touch-target hover-lift transition-all ${
-                    selectedPain === level.level ? 'ring-2 ring-primary bg-primary/5' : ''
+                    selectedPain === level.level
+                      ? "ring-2 ring-primary bg-primary/5"
+                      : ""
                   }`}
                   onClick={() => setSelectedPain(level.level)}
                 >
@@ -225,7 +245,7 @@ export function CheckInScreen() {
                 </Card>
               ))}
             </div>
-            
+
             <Button
               size="lg"
               onClick={handlePainSubmit}

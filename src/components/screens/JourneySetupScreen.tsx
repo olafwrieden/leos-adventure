@@ -1,30 +1,45 @@
-import { useState } from 'react';
-import { useGameState } from '@/hooks/use-game-state';
-import { journeyTemplates } from '@/data/journey-templates';
-import { JourneyTemplate } from '@/types';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ArrowLeft, Clock, MapPin, Users, Search } from '@phosphor-icons/react';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useSharedGameState } from "@/contexts/GameStateContext";
+import { journeyTemplates } from "@/data/journey-templates";
+import { JourneyTemplate } from "@/types";
+import {
+  ArrowLeftIcon,
+  ClockIcon,
+  MagnifyingGlassIcon,
+  MapPinIcon,
+  UsersIcon,
+} from "@phosphor-icons/react/ssr";
+import { useState } from "react";
 
 export function JourneySetupScreen() {
-  const { setCurrentScreen, setSelectedJourneyTemplate, gameState } = useGameState();
-  const [selectedTemplate, setSelectedTemplate] = useState<JourneyTemplate | null>(null);
-  const [patientName, setPatientName] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const { setCurrentScreen, setSelectedJourneyTemplate, gameState } =
+    useSharedGameState();
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<JourneyTemplate | null>(null);
+  const [patientName, setPatientName] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredTemplates = journeyTemplates.filter(template =>
-    template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    template.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    template.description.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredTemplates = journeyTemplates.filter(
+    (template) =>
+      template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleStartJourney = () => {
     if (selectedTemplate && patientName.trim()) {
       setSelectedJourneyTemplate(selectedTemplate, patientName.trim());
-      setCurrentScreen('welcome');
+      setCurrentScreen("welcome");
     }
   };
 
@@ -36,10 +51,10 @@ export function JourneySetupScreen() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setCurrentScreen('staff-dashboard')}
+            onClick={() => setCurrentScreen("staff-dashboard")}
             className="touch-target"
           >
-            <ArrowLeft size={24} />
+            <ArrowLeftIcon size={24} />
           </Button>
           <div>
             <h1 className="font-fredoka text-3xl font-bold text-foreground">
@@ -56,7 +71,10 @@ export function JourneySetupScreen() {
           <div className="lg:col-span-2 space-y-4">
             {/* Search */}
             <div className="relative">
-              <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <MagnifyingGlassIcon
+                size={20}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+              />
               <Input
                 placeholder="Search journey templates..."
                 value={searchQuery}
@@ -72,8 +90,8 @@ export function JourneySetupScreen() {
                   key={template.id}
                   className={`cursor-pointer transition-all hover-lift hover:scale-[1.02] ${
                     selectedTemplate?.id === template.id
-                      ? 'ring-2 ring-primary bg-primary/5'
-                      : 'hover:shadow-lg'
+                      ? "ring-2 ring-primary bg-primary/5"
+                      : "hover:shadow-lg"
                   }`}
                   onClick={() => setSelectedTemplate(template)}
                 >
@@ -87,7 +105,7 @@ export function JourneySetupScreen() {
                           {template.description}
                         </CardDescription>
                       </div>
-                      <div 
+                      <div
                         className="w-4 h-4 rounded-full flex-shrink-0 mt-1"
                         style={{ backgroundColor: template.color }}
                       />
@@ -97,24 +115,28 @@ export function JourneySetupScreen() {
                     <div className="space-y-3">
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
-                          <MapPin size={16} />
+                          <MapPinIcon size={16} />
                           {template.department}
                         </div>
                         <div className="flex items-center gap-1">
-                          <Clock size={16} />
+                          <ClockIcon size={16} />
                           {template.estimatedDuration}
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <Users size={16} />
+                        <UsersIcon size={16} />
                         <span>{template.steps.length} steps in journey</span>
                       </div>
 
                       {/* Steps Preview */}
                       <div className="flex flex-wrap gap-1">
                         {template.steps.slice(0, 4).map((step, index) => (
-                          <Badge key={step.id} variant="secondary" className="text-xs">
+                          <Badge
+                            key={step.id}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {step.icon} {step.title}
                           </Badge>
                         ))}
@@ -132,7 +154,10 @@ export function JourneySetupScreen() {
 
             {filteredTemplates.length === 0 && (
               <div className="text-center py-12">
-                <Search size={48} className="mx-auto text-muted-foreground mb-4" />
+                <MagnifyingGlassIcon
+                  size={48}
+                  className="mx-auto text-muted-foreground mb-4"
+                />
                 <h3 className="font-fredoka text-lg font-semibold text-foreground mb-2">
                   No templates found
                 </h3>
@@ -147,14 +172,19 @@ export function JourneySetupScreen() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="font-fredoka text-lg">Patient Information</CardTitle>
+                <CardTitle className="font-fredoka text-lg">
+                  Patient Information
+                </CardTitle>
                 <CardDescription>
                   Enter the patient's name to personalize their journey
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="patient-name" className="font-inter font-medium">
+                  <Label
+                    htmlFor="patient-name"
+                    className="font-inter font-medium"
+                  >
                     Patient Name
                   </Label>
                   <Input
@@ -172,32 +202,37 @@ export function JourneySetupScreen() {
             {selectedTemplate && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="font-fredoka text-lg">Selected Journey</CardTitle>
-                  <CardDescription>
-                    {selectedTemplate.name}
-                  </CardDescription>
+                  <CardTitle className="font-fredoka text-lg">
+                    Selected Journey
+                  </CardTitle>
+                  <CardDescription>{selectedTemplate.name}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm">
-                      <MapPin size={16} className="text-muted-foreground" />
+                      <MapPinIcon size={16} className="text-muted-foreground" />
                       <span>{selectedTemplate.department}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <Clock size={16} className="text-muted-foreground" />
+                      <ClockIcon size={16} className="text-muted-foreground" />
                       <span>{selectedTemplate.estimatedDuration}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <Users size={16} className="text-muted-foreground" />
+                      <UsersIcon size={16} className="text-muted-foreground" />
                       <span>{selectedTemplate.steps.length} steps</span>
                     </div>
                   </div>
 
                   <div className="pt-4">
-                    <h4 className="font-inter font-medium text-sm mb-2">Journey Steps:</h4>
+                    <h4 className="font-inter font-medium text-sm mb-2">
+                      Journey Steps:
+                    </h4>
                     <div className="space-y-1">
                       {selectedTemplate.steps.map((step, index) => (
-                        <div key={step.id} className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <div
+                          key={step.id}
+                          className="flex items-center gap-2 text-xs text-muted-foreground"
+                        >
                           <span className="w-5 h-5 rounded-full bg-muted flex items-center justify-center text-[10px] font-medium">
                             {index + 1}
                           </span>
@@ -218,7 +253,7 @@ export function JourneySetupScreen() {
               className="w-full touch-target font-fredoka font-semibold text-lg h-14"
               size="lg"
             >
-              Start {patientName.trim() ? `${patientName}'s` : ''} Journey
+              Start {patientName.trim() ? `${patientName}'s` : ""} Journey
             </Button>
           </div>
         </div>

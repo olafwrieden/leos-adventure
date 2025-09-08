@@ -1,21 +1,22 @@
-import { useKV } from '@github/spark/hooks';
 import { ChildProfile } from '@/types';
+import { useState } from 'react';
 
 export function useAllProfiles() {
-  const [allProfiles, setAllProfiles] = useKV<ChildProfile[]>('all-child-profiles', []);
+  const [allProfiles, setAllProfiles] = useState<ChildProfile[]>([]);
 
   const addOrUpdateProfile = (profile: ChildProfile) => {
     setAllProfiles(current => {
-      const existing = current.find(p => p.id === profile.id);
+      const safeCurrent = current ?? [];
+      const existing = safeCurrent.find(p => p.id === profile.id);
       if (existing) {
-        return current.map(p => p.id === profile.id ? profile : p);
+        return safeCurrent.map(p => p.id === profile.id ? profile : p);
       }
-      return [...current, profile];
+      return [...safeCurrent, profile];
     });
   };
 
   const removeProfile = (profileId: string) => {
-    setAllProfiles(current => current.filter(p => p.id !== profileId));
+    setAllProfiles(current => (current ?? []).filter(p => p.id !== profileId));
   };
 
   return {
