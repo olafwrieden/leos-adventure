@@ -1,4 +1,4 @@
-# 🦁 Leo's Adventures: Hospital Journey MVP
+# 🦁 Leo's Adventure: Hospital Journey MVP
 
 > A gamified web app to support non-verbal children through hospital visits with interactive avatars, emotional check-ins, and visual journey mapping.
 
@@ -38,7 +38,7 @@ Live updates of emotional state, pain levels, and journey progress for personali
 
 ---
 
-## 💡 Why Leo's Adventures?
+## 💡 Why Leo's Adventure?
 
 - Designed for non-verbal and anxious children
 - Empowers kids and supports staff with real-time insights

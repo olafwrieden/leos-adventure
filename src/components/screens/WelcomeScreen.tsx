@@ -33,7 +33,7 @@ export function WelcomeScreen() {
         <div className="space-y-4">
           <div className="text-6xl animate-bounce-gentle">🦁</div>
           <h1 className="text-4xl font-fredoka font-bold text-foreground">
-            Leo's Adventures
+            Leo's Adventure
           </h1>
           <p className="text-xl font-fredoka text-muted-foreground">
             Your magical hospital journey starts here!

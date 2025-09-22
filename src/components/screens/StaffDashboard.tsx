@@ -79,7 +79,7 @@ export function StaffDashboard() {
             </Button>
             <div>
               <h1 className="text-2xl font-inter font-bold text-foreground">
-                Leo's Adventures - Staff Dashboard
+                Leo's Adventure - Staff Dashboard
               </h1>
               <p className="text-sm text-muted-foreground">
                 Real-time patient emotional state and comfort monitoring
